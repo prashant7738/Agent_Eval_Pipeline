@@ -1,0 +1,199 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+
+\begin{document}
+
+\title{Evaluating AI Agents with LLM-Based Judges}
+
+\author{\IEEEauthorblockN{Prashant Kafle}
+\IEEEauthorblockA{\textit{Department of Computer Engineering} \\
+\textit{Thapathali Campus, IOE}\\
+Kathmandu, Nepal \\
+Roll no: THA080BCT026 \\
+prashantkafle7738@gmail.com}
+\and
+\IEEEauthorblockN{Sunil Paudel}
+\IEEEauthorblockA{\textit{Department of Computer Engineering} \\
+\textit{Thapathali Campus, IOE}\\
+Kathmandu, Nepal \\
+Roll no: THA080BCT047 \\
+sunil.080bct047@tcioe.edu.np}}
+
+\maketitle
+
+\begin{abstract}
+As language-model agents take on longer tasks, evaluating their outputs becomes a practical systems problem. Human assessment is expensive and difficult to repeat at scale, while automatic metrics can miss factual errors, useful reasoning, and task-specific quality. This paper reports on two linked but methodologically separate studies conducted on a shared benchmark of agent tasks sampled from GAIA \cite{mialon2023gaia}. Study 1 is a purely algorithmic comparison: ROUGE-L measures reference-based similarity with longest common subsequence dynamic programming, Bradley--Terry and Elo-style models convert pairwise judgments into rankings, and SelfCheckGPT uses disagreement among stochastic samples to detect possible hallucinations, applied to approximately 180 agent responses generated from 90 stratified GAIA tasks. Study 2 is a human--LLM judge agreement study: two trained human annotators and an LLM judge independently label a stratified subsample of 100 of those responses under a fixed four-category rubric, and Cohen's kappa measures whether the judge's decisions agree with a human-adjudicated standard beyond chance. The two studies share a single research question -- whether an LLM judge can be treated as a reliable measurement instrument rather than merely a convenient source of scores -- but are designed, sampled, and analyzed independently, so that an algorithmic result from Study 1 is never mistaken for evidence of judge validity in Study 2.
+\end{abstract}
+
+\begin{IEEEkeywords}
+agent evaluation, LLM-as-a-judge, ROUGE-L, Bradley--Terry model, SelfCheckGPT, Cohen's kappa
+\end{IEEEkeywords}
+
+\section{Introduction}
+Modern agents can plan, call tools, and revise their own outputs. That makes evaluation harder than checking whether a short answer matches a reference. An agent may produce a correct final answer with different wording, or a plausible answer that contains one unsupported claim. It may also succeed on one run and fail on another because sampling, tool responses, or intermediate decisions change. A useful evaluation method therefore needs to measure more than surface similarity.
+
+Human review remains the most direct way to judge whether an agent followed instructions and produced a useful result. It is slow, expensive, and difficult to apply consistently across many runs. This has encouraged the use of automatic metrics and, more recently, large language models as evaluators. An LLM judge can read an open-ended response and return a score, a comparison, or a written explanation. The same flexibility that makes this approach attractive also creates a problem: the judge may favor certain styles, follow superficial cues, or agree with another model without tracking factual correctness.
+
+This paper treats evaluation as a sequence of related algorithmic problems. First, ROUGE-L provides a low-cost reference-based score using the longest common subsequence (LCS). Second, pairwise model comparisons can be aggregated with Bradley--Terry or Elo-style ranking models. Third, SelfCheckGPT tests whether sampled answers remain consistent when the system has no external fact database. Finally, Cohen's kappa measures agreement between the automated judge and human annotations. The last step is essential. A judge that produces stable scores but disagrees with people is not necessarily reliable.
+
+The study will implement these methods and compare their computational behavior and practical limitations on agent-generated responses. The main research question is: \emph{under what conditions do automatic and LLM-based evaluation methods provide measurements that are both scalable and aligned with human judgment?} The planned analysis has four goals:
+\begin{itemize}
+\item implement ROUGE-L and report its dynamic-programming cost and sensitivity to wording;
+\item estimate model rankings from pairwise judgments and examine how rankings change with the comparison data;
+\item test whether SelfCheckGPT's consistency signal identifies hallucinated or unsupported claims; and
+\item measure judge--human agreement with Cohen's kappa instead of treating an LLM score as ground truth.
+\end{itemize}
+
+The remainder of the paper reviews prior work, describes the algorithms and experimental design, reports results, and discusses the limits of automated evaluation.
+
+\section{Literature Review}
+\subsection{Two Layers of Evaluation}
+Prior work on evaluating language-model agents can be separated into two layers that are frequently discussed together but ask different questions. The first layer evaluates \emph{agent outputs}: does a response match a reference, does it rank above a competing response, and is it internally consistent enough to be trusted as a factual claim? The second layer evaluates \emph{the evaluator itself}: when an LLM is used to produce those judgments, is the judge's own output reliable, and does it agree with independent human decisions? Blending these two layers makes it easy to mistake a stable or fluent judgment for a correct one. This paper's four-part pipeline follows the same split: ROUGE-L, the Bradley--Terry/Elo ranking models, and SelfCheckGPT belong to the first layer, while LLM-as-a-judge reliability and Cohen's kappa belong to the second. The rest of this section reviews prior work under each layer in turn.
+
+\subsection{Layer 1: Evaluating Agent Outputs}
+\subsubsection{Reference-Based Text Evaluation}
+ROUGE was introduced as a package for comparing generated summaries with human-written references \cite{lin2004rouge}. ROUGE-L uses the longest common subsequence between a candidate and a reference. Unlike exact n-gram overlap, the LCS can reward a shared sequence even when words are separated by insertions. Its dynamic-programming computation is straightforward: for sequences of lengths $m$ and $n$, the standard LCS table requires $O(mn)$ time and $O(mn)$ space, or $O(\min(m,n))$ space with row reuse. These properties make ROUGE-L useful as a reproducible baseline.
+
+Its limitation is equally important for agent evaluation. ROUGE-L measures overlap with a reference, not whether a response is factually correct, executable, or useful. Two valid answers can receive different scores because they use different phrasing. A response can also share many words with a reference while containing a subtle error. Recent surveys therefore place lexical metrics among the efficient tools for constrained tasks, while noting their weakness on open-ended generation \cite{li2024generation}.
+
+\subsubsection{Pairwise Comparison and Ranking}
+When a single numeric reference score is unavailable, evaluators can compare two outputs directly. The Bradley--Terry model represents the probability that item $i$ defeats item $j$ as
+\begin{equation}
+P(i \succ j)=\frac{\exp(\beta_i)}{\exp(\beta_i)+\exp(\beta_j)},
+\end{equation}
+where $\beta_i$ and $\beta_j$ are latent quality parameters \cite{bradley1952rank}. Fitting these parameters over many comparisons produces a ranking and exposes uncertainty caused by sparse or uneven comparisons. Elo ratings use a related update rule and are widely associated with competitive pairwise ranking \cite{elo1978rating}.
+
+Pairwise evaluation is attractive because people often find it easier to choose the better of two answers than to assign an absolute score. This idea appears in large-scale language-model evaluation, including MT-Bench and Chatbot Arena, where model comparisons are aggregated into rankings \cite{zheng2023judging}. However, rankings inherit the judge's biases. Position effects, verbosity preferences, and inconsistent criteria can change the result. A ranking algorithm can summarize judgments accurately while the judgments themselves remain poorly grounded -- a concern that belongs to the second layer of evaluation discussed below.
+
+\subsubsection{Consistency-Based Hallucination Detection}
+SelfCheckGPT addresses hallucination detection without requiring model probabilities or an external knowledge base \cite{manakul2023selfcheckgpt}. The method samples multiple responses to the same prompt and compares the claims across samples. If a model has stable knowledge of a fact, the samples should tend to agree. Unsupported claims are more likely to vary or contradict one another. The approach can therefore be applied to black-box systems for which token probabilities are unavailable.
+
+The method does not establish truth by itself. A model can repeat the same false statement in every sample, and legitimate answers may vary in wording. Sampling also adds computation: producing $k$ responses costs roughly $k$ model calls before the consistency comparisons are performed. These tradeoffs make SelfCheckGPT a useful diagnostic signal rather than a replacement for fact verification. The proposed study will examine both its detection quality and its cost as the number of samples changes.
+
+\subsection{Layer 2: Evaluating the Evaluators}
+\subsubsection{LLM-as-a-Judge and Its Own Reliability}
+LLM-as-a-judge systems use a language model to score, rank, or select outputs, and increasingly stand in for the ranking and consistency judgments described in Layer 1. Surveys of the area describe applications in open-ended generation and identify reliability, bias, prompt design, and judge calibration as unresolved concerns \cite{li2024evaluation,gu2025survey}. The central distinction is between using an LLM to generate a judgment and showing that the judgment is valid. A fluent explanation or a stable score does not prove agreement with a human evaluator, which is precisely why the judge itself, and not only the outputs it scores, must be treated as an object of study.
+
+\subsubsection{Benchmarks That Test Judges Directly}
+A growing line of work targets the judge as the unit of evaluation rather than the agent under test. JudgeBench constructs challenging response pairs with objectively correct preference labels and shows that strong LLM judges, including GPT-4o, perform only slightly better than random guessing on cases where crowdsourced preference is a poor proxy for factual and logical correctness \cite{tan2025judgebench}. Agent-as-a-Judge extends this idea to agentic, multi-step tasks: it uses an agentic evaluator that inspects intermediate steps rather than only the final output, and reports that this step-aware judge is more reliable than a conventional LLM-as-a-judge baseline and comparable to human evaluation on the DevAI benchmark \cite{zhuge2024agentasjudge}. AgentRewardBench evaluates LLM judges specifically on web-agent trajectories against expert annotations and finds that no single judge performs well across all benchmarks, and that the rule-based evaluators commonly used as a substitute tend to underreport agent success \cite{lu2025agentrewardbench}. Together, these benchmarks make the same point from three different task settings: a judge's fluency or apparent consistency is not evidence of its correctness, and judges require dedicated benchmarks in the same way that agents do.
+
+\subsubsection{Chance-Corrected Human Agreement}
+Cohen's kappa provides a lightweight way to test judge--human agreement for categorical labels while correcting for agreement expected by chance \cite{cohen1960coefficient}. For observed agreement $p_o$ and chance agreement $p_e$, it is defined as
+\begin{equation}
+\kappa=\frac{p_o-p_e}{1-p_e}.
+\end{equation}
+Unlike raw accuracy, kappa can reveal when a judge appears accurate mainly because one label dominates the dataset. Its interpretation still depends on the label distribution and annotation protocol, so it should be reported with the confusion matrix and class counts. Compared with dedicated judge benchmarks such as JudgeBench and AgentRewardBench, kappa is a much smaller-scale check, but it plays the same role: it is the validation measure that connects the Layer 1 algorithms to the practical question of trust, namely whether an automated judge agrees with human decisions on the same outputs.
+
+\subsection{Research Gap}
+Existing work tends to stay within one of the two layers, and this separation is the concrete gap this paper targets. Reference metrics, pairwise ranking models, and hallucination detectors study the outputs of an agent; judge benchmarks such as JudgeBench, Agent-as-a-Judge, and AgentRewardBench study the reliability of the judge in isolation, typically on a single task family such as knowledge-and-reasoning pairs, coding, or web-agent trajectories \cite{tan2025judgebench,zhuge2024agentasjudge,lu2025agentrewardbench}. None of these studies test whether the same LLM judge that produces Layer 1 pairwise labels (feeding the Bradley--Terry ranking) or Layer 1 consistency judgments is also validated, on the same task set, against independent human labels. This is a specific and currently unanswered empirical question, not a rhetorical one: a judge could produce Bradley--Terry rankings that remain stable across bootstrap resamples of the comparison data while still disagreeing with human annotators beyond what chance predicts, and no published study we found reports both quantities on the same benchmark. The four methods studied here are therefore not grouped by convenience; they are grouped because Study 2 (Section~\ref{sec:study2}) directly tests the judge that Study 1 (Section~\ref{sec:study1}) partially depends on to produce its pairwise and consistency labels. The two studies are reported separately, on the same GAIA-derived benchmark, precisely so that a favorable result in one is never substituted for evidence in the other.
+
+\section{Theoretical Framework and Justification}
+The four methods studied in this paper are not arbitrary choices. Each targets a distinct layer of the evaluation problem, and together they form a chain that moves from surface-level text comparison to a validated measure of judge trustworthiness. This section states the theoretical basis for that chain and justifies why each algorithm is necessary rather than redundant.
+
+\subsection{Evaluation as a Measurement Problem}
+Treating agent evaluation as a measurement problem, rather than a scoring exercise, motivates the overall design. A measurement instrument must satisfy two properties: it must be computable at reasonable cost, and its output must correspond to the quantity it claims to measure. Classical test theory separates these concerns into reliability, whether repeated measurement gives consistent results, and validity, whether the measurement reflects the target construct \cite{cohen1960coefficient}. ROUGE-L and Bradley--Terry/Elo scores are efficient and reliable by construction, since they are deterministic functions of fixed inputs. Their validity, that is, whether a high score reflects real response quality, is not guaranteed and must be checked separately. SelfCheckGPT targets a different construct, factual consistency, that similarity and ranking scores do not capture. Cohen's kappa is included specifically to test validity: it measures whether the judge's categorical decisions align with human decisions beyond chance, which reliability alone cannot establish. This framework explains why no single metric in the pipeline is sufficient on its own.
+
+\subsection{Complexity and Feasibility Justification}
+Each algorithm is chosen partly because its computational profile matches what is feasible to run repeatedly over an agent's outputs. The LCS dynamic program behind ROUGE-L runs in $O(mn)$ time, which is negligible next to the cost of generating the responses themselves, so it is used as a cheap first-pass filter. Bradley--Terry and Elo estimation are used because pairwise comparison data can be collected incrementally, and maximum-likelihood fitting of the Bradley--Terry model or iterative Elo updates scale close to linearly in the number of comparisons, which keeps ranking updates tractable as more agent outputs are produced. SelfCheckGPT is more expensive, since it requires $k$ additional model samples per prompt, so it is justified only for the subset of outputs where a similarity or ranking score is inconclusive, not for every response. Cohen's kappa is computed once over a fixed confusion matrix and adds negligible cost, which is why it is used as the final validation step rather than an early filter. Ordering the pipeline from cheapest to most expensive is itself a design decision grounded in algorithmic complexity, not only in what each method measures.
+
+\subsection{Why Pairwise Comparison Over Absolute Scoring}
+The choice of Bradley--Terry and Elo models over direct absolute scoring follows from known limitations of asking a judge, human or LLM, to assign a number on a fixed scale. Absolute scores from different judges or different sessions are not guaranteed to be on a common scale, and a single judge's scale can drift across a long batch of items. Pairwise comparison avoids anchoring an output to an arbitrary numeric scale; it only requires a local decision about which of two outputs is better, and the ranking is recovered afterward through the probabilistic model in Equation~(1). This is the same justification used in large-scale human preference benchmarking \cite{zheng2023judging}, and it applies equally when the judge is an LLM rather than a person.
+
+\subsection{Why Consistency Substitutes for Ground Truth}
+SelfCheckGPT is justified by a specific theoretical assumption: when a language model has genuinely learned a fact, resampling under different random seeds should reproduce that fact, while an unsupported or fabricated claim is less likely to be reproduced identically across samples \cite{manakul2023selfcheckgpt}. This assumption lets the method detect a likely hallucination without an external database, at the cost of being a proxy rather than a direct correctness check. The framework used here treats SelfCheckGPT's output as an additional feature alongside ROUGE-L and ranking scores, not as a standalone verdict, which is consistent with its original design as a sampling-based diagnostic rather than a certifier of truth.
+
+\subsection{Why Human Agreement Is the Final Criterion}
+The theoretical framework treats the LLM judge as a hypothesis to be tested, not as an oracle. This follows directly from inter-rater reliability theory, where any single rater's output is only meaningful once compared against another rater using a chance-corrected statistic \cite{cohen1960coefficient}. Applying Cohen's kappa between the LLM judge and human annotators operationalizes this idea: a kappa near zero indicates that apparent judge accuracy is an artifact of label imbalance, while a high kappa supports treating the judge's categorical decisions as a usable substitute for costly human review in future evaluations. This is why the pipeline ends with kappa rather than with the judge's own score.
+
+\subsection{Why Two Studies Rather Than One Pipeline}
+The four methods belong together theoretically, but they do not belong in a single empirical design. ROUGE-L, Bradley--Terry/Elo, and SelfCheckGPT are deterministic or sampling-based algorithms applied to fixed inputs; evaluating them requires no human subjects and answers questions about computational cost and statistical behavior. Cohen's kappa evaluates a different kind of claim, namely whether a specific judge's categorical decisions agree with independent human decisions, and answering it requires a human-subjects annotation protocol with its own sampling, blinding, and reliability checks. Reporting these under one undifferentiated ``Research Design'' section, as an earlier draft of this paper did, made the four methods read as unrelated case studies rather than as a chain. Section~\ref{sec:study1} therefore reports Study 1 (the algorithmic comparison) on its own data subsample and its own statistical tests, and Section~\ref{sec:study2} reports Study 2 (the judge-agreement study) on its own subsample, annotation protocol, and statistical tests. The two studies are connected only through the research question stated in Section~I and through the fact that the LLM judge validated in Study 2 is the same judge used to generate the pairwise labels analyzed in Study 1.
+
+\section{Research Design}
+\subsection{Overview}
+The study is organized as two separate studies that share a single source of agent tasks (Section~\ref{sec:data}) but differ in design, sampling, and analysis. Study 1 (Section~\ref{sec:study1}) is a purely algorithmic comparison of ROUGE-L, Bradley--Terry/Elo ranking, and SelfCheckGPT; it requires no human subjects and answers questions about computational cost and statistical behavior. Study 2 (Section~\ref{sec:study2}) is a human--LLM judge agreement study; it requires an independent human-annotation protocol and answers whether the LLM judge agrees with human decisions beyond chance. Results, procedures, and statistical tests for the two studies are reported in separate subsections so that they are never conflated.
+
+\subsection{Shared Task Source and Inclusion Criteria}
+\label{sec:data}
+Both studies draw their agent tasks from the validation split of the GAIA benchmark \cite{mialon2023gaia}, which provides 165 questions with public, human-verified reference answers across three difficulty levels (Level 1: single-step lookup; Level 2: short multi-step reasoning or tool use; Level 3: long multi-step tool chains). GAIA is used instead of a self-constructed task set because its reference answers and difficulty stratification are already documented and independently verifiable, which supports the reproducibility of task selection.
+
+A GAIA task is included in the study if it satisfies all of the following criteria:
+\begin{itemize}
+\item it is answerable using only text and web-browsing/tool access available in the evaluation sandbox (tasks requiring image or audio file inputs the sandbox cannot process are excluded);
+\item its published reference answer is a short, checkable string suitable for exact-match or ROUGE-L scoring;
+\item the agent under evaluation returns a non-empty final answer within a fixed budget of 15 tool calls and 10 minutes of wall-clock time; tasks that exceed this budget are logged as incomplete, excluded from reference-based scoring, but retained in the reported completion-rate statistics.
+\end{itemize}
+Applying these criteria to the 165 validation tasks is expected to yield a working set of approximately 90 tasks, sampled proportionally across the three difficulty levels (approximately 30 Level 1, 40 Level 2, and 20 Level 3 tasks). Each included task is run through two fixed agent configurations (a baseline single-pass agent and a tool-augmented agent), producing approximately 180 agent responses that form the base dataset for Study 1. A further subset of 40 tasks, drawn proportionally from the same three levels, is resampled $k=5$ times per configuration to support the SelfCheckGPT consistency check.
+
+\subsection{Study 1: Algorithmic Comparison of Output-Evaluation Methods}
+\label{sec:study1}
+\subsubsection{Design}
+Study 1 answers a purely algorithmic question: how do ROUGE-L, Bradley--Terry/Elo ranking, and SelfCheckGPT behave, in terms of computational cost, score distribution, and ranking stability, on the same set of agent outputs? Study 1 uses no human labels and computes no Cohen's kappa; the pairwise labels it produces with the LLM judge are simply the object that Study 2 later validates.
+
+\subsubsection{Procedure}
+\begin{itemize}
+\item \textbf{Stage 1 -- Reference scoring.} ROUGE-L is computed between each of the approximately 180 agent responses and its GAIA reference answer using the LCS-based dynamic program. Wall-clock time per comparison and the full score distribution (mean, median, interquartile range) are recorded.
+\item \textbf{Stage 2 -- Pairwise ranking.} For each task, the two agent configurations' responses are compared pairwise by the LLM judge, and the resulting comparisons across all 90 tasks are fit with the Bradley--Terry model and an Elo-style update rule.
+\item \textbf{Stage 3 -- Consistency checking.} For the 40-task, $k=5$ resampled subset, SelfCheckGPT compares claims across the five samples per response and produces a consistency score per response. Wall-clock cost is additionally measured as a function of $k \in \{3,5,10\}$ on a pilot subset of 10 tasks.
+\end{itemize}
+
+\subsubsection{Statistical Analysis Plan}
+ROUGE-L scores and per-method running times are summarized descriptively (mean, median, interquartile range) and compared across the two agent configurations with a paired Wilcoxon signed-rank test, since scores from the same task under two configurations are paired rather than independent. Ranking stability is assessed by bootstrap-resampling the set of pairwise comparisons 500 times, refitting the Bradley--Terry model on each resample, and computing Kendall's $\tau$ rank correlation between each resampled ranking and the ranking obtained on the full comparison set; the mean and 95\% bootstrap confidence interval of $\tau$ are reported. SelfCheckGPT consistency scores are summarized descriptively and, for the subset of responses that also receive a human hallucination label in Study 2, correlated with that label using the point-biserial correlation coefficient as an external, non-circular check on the consistency signal.
+
+\subsection{Study 2: Human--LLM Judge Agreement Study}
+\label{sec:study2}
+\subsubsection{Design}
+Study 2 answers a different question from Study 1: does the LLM judge's categorical decision on a response agree with an independent human decision on the same response, beyond the agreement expected by chance? Study 2 is reported with its own subsample, its own annotators, and its own statistical test (Cohen's kappa), so that a favorable algorithmic result in Study 1 is never substituted for evidence of judge validity.
+
+\subsubsection{Sampling}
+A stratified subsample of 100 responses is drawn from the approximately 180 responses generated in Study 1, proportionally to the three GAIA difficulty levels and to the two agent configurations. This size keeps annotation load feasible for two annotators while remaining large enough to estimate kappa with a reasonably narrow confidence interval.
+
+\subsubsection{Rubric}
+Each response is labeled with exactly one of four categories, applied identically by both human annotators and the LLM judge: (1) \emph{Correct} -- matches the reference or task intent with no unsupported claims; (2) \emph{Partially correct} -- the main answer is right but includes a minor unsupported or extraneous claim; (3) \emph{Incorrect} -- the main answer does not match the reference or fails the task; (4) \emph{Hallucinated} -- the response contains a specific factual claim not supported by the reference, the retrieved tool output, or the task context.
+
+\subsubsection{Annotation Protocol}
+The two human annotators are the paper's authors. Because their shared involvement in the project could inflate agreement, the protocol includes the following controls:
+\begin{itemize}
+\item \textbf{Calibration.} Both annotators jointly label a separate calibration set of 20 responses (disjoint from the 100-response sample), discuss disagreements, and refine the rubric wording before the main annotation round.
+\item \textbf{Independent, blind labeling.} For the 100-response sample, each annotator labels all responses independently, in an independently randomized order, without access to the LLM judge's labels or to the other annotator's labels.
+\item \textbf{Human--human reliability precondition.} Cohen's kappa is computed between the two human annotators before any comparison with the LLM judge. If human--human kappa falls below 0.6 (the conventional threshold for ``substantial agreement'' on the Landis--Koch scale), the rubric is judged too unreliable to serve as a reference standard; it is revised and re-piloted on a fresh calibration set before Study 2 proceeds to the judge comparison.
+\item \textbf{Adjudication.} Where the two annotators disagree, an adjudicated label is produced through discussion. This adjudicated label, not either individual annotator's label, is the human reference standard used against the LLM judge.
+\end{itemize}
+The LLM judge labels the same 100 responses using the same rubric text, without access to either annotator's labels, in a single pass with prompt order randomized independently of the human annotation order.
+
+\subsubsection{Statistical Analysis Plan}
+Two kappa statistics are reported, each with a 95\% bootstrap confidence interval computed over $2{,}000$ resamples of the 100 labeled responses:
+\begin{itemize}
+\item \emph{Human--human kappa}, comparing the two annotators before adjudication, reported as evidence that the rubric is applied reliably;
+\item \emph{Judge--human kappa}, comparing the LLM judge's labels with the adjudicated human labels, reported as the paper's central validity result.
+\end{itemize}
+Both statistics are reported alongside the full $4\times4$ confusion matrix and class counts, since kappa can be misleading when one category dominates the sample, and raw percent agreement is reported alongside kappa for the same reason. The rubric text, annotation instructions, and confusion matrices are intended to be released so that the kappa computation is independently checkable.
+
+\subsection{Threats to Validity}
+Threats specific to Study 1 include the limited size of the task set (90 tasks) relative to the diversity of real agent deployments, and the fact that only two agent configurations are compared, which limits how far the ranking-stability results generalize to other agent designs. Threats specific to Study 2 include the small number of human annotators (two, who are also the authors), which is mitigated by the calibration round, blind independent labeling, the human--human reliability precondition, and adjudication described above, though it cannot fully remove shared bias; prompt sensitivity of the LLM judge, mitigated by fixing the rubric text and prompt across all 100 responses; and the modest subsample size, mitigated by reporting bootstrap confidence intervals rather than a single kappa value. Both studies draw tasks from a single benchmark family (GAIA), so results are reported as a case study of the four methods on one benchmark rather than a claim of generality across all agent types or task domains.
+
+\section*{Acknowledgment}
+We thanks our Sir Rajad Shakya for his help and guidance.
+
+\begin{thebibliography}{00}
+\bibitem{lin2004rouge} C.-Y. Lin, ``ROUGE: A package for automatic evaluation of summaries,'' in \emph{Proc. ACL Workshop on Text Summarization Branches Out}, Barcelona, Spain, 2004, pp. 74--81.
+\bibitem{bradley1952rank} R. A. Bradley and M. E. Terry, ``Rank analysis of incomplete block designs: I. The method of paired comparisons,'' \emph{Biometrika}, vol. 39, nos. 3--4, pp. 324--345, 1952.
+\bibitem{elo1978rating} A. E. Elo, \emph{The Rating of Chessplayers, Past and Present}. New York, NY, USA: Arco, 1978.
+\bibitem{zheng2023judging} L. Zheng \emph{et al.}, ``Judging LLM-as-a-judge with MT-Bench and Chatbot Arena,'' arXiv:2306.05685, 2023.
+\bibitem{manakul2023selfcheckgpt} P. Manakul, A. Liusie, and M. J. F. Gales, ``SelfCheckGPT: Zero-resource black-box hallucination detection for generative large language models,'' in \emph{Proc. EMNLP}, 2023, pp. 9004--9022.
+\bibitem{li2024generation} D. Li \emph{et al.}, ``From generation to judgment: Opportunities and challenges of LLM-as-a-judge,'' arXiv preprint, 2024.
+\bibitem{li2024evaluation} H. Li \emph{et al.}, ``LLMs-as-judges: A comprehensive survey on LLM-based evaluation methods,'' arXiv:2412.05579, 2024.
+\bibitem{gu2025survey} J. Gu \emph{et al.}, ``A survey on LLM-as-a-judge,'' arXiv:2411.15594, 2025.
+\bibitem{cohen1960coefficient} J. Cohen, ``A coefficient of agreement for nominal scales,'' \emph{Educational and Psychological Measurement}, vol. 20, no. 1, pp. 37--46, 1960.
+\bibitem{tan2025judgebench} S. Tan, S. Zhuang, K. Montgomery, W. Y. Tang, A. Cuadron, C. Wang, R. A. Popa, and I. Stoica, ``JudgeBench: A benchmark for evaluating LLM-based judges,'' in \emph{Proc. Int. Conf. on Learning Representations (ICLR)}, 2025.
+\bibitem{zhuge2024agentasjudge} M. Zhuge \emph{et al.}, ``Agent-as-a-Judge: Evaluate agents with agents,'' arXiv:2410.10934, 2024.
+\bibitem{lu2025agentrewardbench} X. H. Lu, A. Kazemnejad, N. Meade, A. Patel, D. Shin, A. Zambrano, K. Sta\'nczak, P. Shaw, C. J. Pal, and S. Reddy, ``AgentRewardBench: Evaluating automatic evaluations of web agent trajectories,'' arXiv:2504.08942, 2025.
+\bibitem{mialon2023gaia} G. Mialon, C. Fourrier, C. Swift, T. Wolf, Y. LeCun, and T. Scialom, ``GAIA: A benchmark for general AI assistants,'' arXiv:2311.12983, 2023.
+\end{thebibliography}
+
+\end{document}

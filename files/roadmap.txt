@@ -1,0 +1,33 @@
+Day 1 (today) — build the three easy pieces
+
+ROUGE-L: ~30 lines, LCS dynamic programming. I can write this with you in minutes.
+Bradley-Terry: small MLE fit (iterative, ~20 lines) — no need for a library.
+Pick your task set: instead of 90 GAIA tasks, take 15-20 GAIA tasks (still real, still from the public validation split, just fewer). Skip building a "tool-augmented agent" — use one simple agent config (a single LLM call with web search) instead of two. Cut a whole axis of complexity immediately.
+
+Day 2 — generate responses
+
+Run your agent on the 15-20 tasks → get responses.
+Compute ROUGE-L against GAIA reference answers.
+This is mechanical once the agent works — budget most of the day for agent debugging, not the metric itself.
+
+Day 3 — judge + ranking + SelfCheckGPT
+
+Use an LLM (Claude or GPT API) as the pairwise judge — have it compare pairs of responses, feed comparisons into Bradley-Terry.
+SelfCheckGPT: pick a subset of ~8-10 tasks, sample k=3 (not 5) responses each, measure consistency. Simplest consistency check: n-gram/semantic overlap between samples — don't need NLI models.
+
+Day 4 — the human study (Study 2)
+
+Shrink 100 → 30 responses. You and Sunil each label them independently on the 4-category rubric (Correct/Partial/Incorrect/Hallucinated).
+Do a short calibration pass on 5 responses together first (not 20), fix disagreements in the rubric, then label blind and independent.
+Adjudicate any disagreements together.
+
+Day 5 — stats + write results
+
+Compute Cohen's kappa: human-human, then judge-human.
+Build the confusion matrix.
+Skip the 500-resample bootstrap Kendall's τ — a simple mean + range, or just report point estimates, is fine for a course paper. Note it as a limitation instead of pretending you ran it.
+
+Day 6 — rewrite the paper to match reality
+
+Go through the draft and change every number (90→your N, 180→your N, 100→30, k=5→k=3, 500 bootstrap→drop or simplify) so the paper describes what you actually did, not the original proposal.
+Rewrite "Threats to Validity" honestly — small sample size is now your main limitation, say so plainly. That's normal and fine for a course paper; reviewers/instructors respect honesty over inflated claims far more than they respect big numbers that don't match the results section.
