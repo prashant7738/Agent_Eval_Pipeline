@@ -1,19 +1,37 @@
 # Agent Eval Pipeline
 
-Four algorithms for the paper: ROUGE-L, Bradley-Terry/Elo, SelfCheckGPT, Cohen's Kappa.
+Four algorithms for the paper: ROUGE-L, Bradley-Terry/Elo, SelfCheckGPT, Cohen's Kappa,
+plus the agent, GAIA loader, and human-study scripts that tie them together end to end.
 
 ## Setup
 ```
+python3 -m venv ../.venv && source ../.venv/bin/activate
 pip install -r requirements.txt
-export GROQ_API_KEY="your-free-key-from-console.groq.com"
 ```
+Fill in `files/.env`:
+```
+GROQ_API_KEY=your-free-key-from-console.groq.com
+HF_TOKEN=your-huggingface-token
+```
+GAIA (`gaia-benchmark/GAIA` on HuggingFace) is a **gated dataset** — visit the dataset
+page while logged in as the account behind `HF_TOKEN` and click "Agree and access
+repository" before `gaia_loader.py` will work.
 
-## Files
-- `rouge_l.py` — no API needed. Tested, works standalone.
-- `bradley_terry.py` — no API needed. Tested, works standalone.
-- `kappa.py` — no API needed. Tested, works standalone.
+## Algorithm modules (no orchestration, tested standalone)
+- `rouge_l.py` — no API needed.
+- `bradley_terry.py` — no API needed.
+- `kappa.py` — no API needed.
 - `llm_judge.py` — needs GROQ_API_KEY. Pairwise comparison + 4-category rubric labeling.
 - `selfcheckgpt.py` — needs GROQ_API_KEY. Samples k responses, scores consistency.
+
+## Pipeline scripts (run in this order)
+1. `gaia_loader.py` — pulls a stratified ~18-task text-only subset of GAIA validation, saves `data/gaia_tasks.json`.
+2. `agent.py` — the single agent config (web search via `web_search.py` + one Groq call) used everywhere below.
+3. `run_study1.py` — Day 2-3: generates one response per task, scores ROUGE-L, then samples k=3 responses on a subset for SelfCheckGPT consistency + a per-task Bradley-Terry ranking of those samples.
+4. `prepare_human_study.py` — Day 4: builds a 30-item labeling pool (main responses + SelfCheckGPT samples), writes `data/annotator1_sheet.csv` / `annotator2_sheet.csv` for blind independent labeling, and gets the LLM judge's labels on the same pool.
+5. `score_human_study.py` — Day 5: computes human-human Cohen's kappa, writes `data/adjudication_needed.csv` for any disagreements, then (once adjudicated) computes judge-human kappa with the confusion matrix.
+
+All generated data lands in `files/data/` (gitignored).
 
 ## Free LLM notes
 Using Groq (console.groq.com) — free tier, OpenAI-compatible, fast Llama models.
