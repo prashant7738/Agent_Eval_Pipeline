@@ -26,6 +26,26 @@ repository" before `gaia_loader.py` will work.
 - `llm_judge.py` — needs GROQ_API_KEY. Pairwise comparison + 4-category rubric labeling.
 - `selfcheckgpt.py` — needs GROQ_API_KEY. Samples k responses, scores consistency.
 
+## Agent backend: Groq (default) vs. Gemini
+`agent.py` supports two backends. The results already saved in `files/data/` were
+generated with **Groq** (Llama + DuckDuckGo snippets), which struggles on GAIA's
+multi-hop lookup tasks (mean ROUGE-L F1 ~0.09) mostly because DuckDuckGo snippets
+rarely contain the precise fact needed, not primarily because of the model itself.
+
+To try **Gemini** instead (native Google Search grounding tool, does real iterative
+search rather than one snippet dump):
+```
+uv sync --extra gemini
+```
+Add to `files/.env`:
+```
+GEMINI_API_KEY=your-free-key-from-aistudio.google.com
+```
+Then set `AGENT_BACKEND=gemini` before re-running `run_study1.py` (or pass
+`backend="gemini"` directly to `run_agent()`). Switching the backend does not
+overwrite existing data — re-running writes over `data/responses.json` etc., so
+back up the Groq-generated results first if you want to keep both as a comparison.
+
 ## Pipeline scripts (run in this order)
 1. `gaia_loader.py` — pulls a stratified ~18-task text-only subset of GAIA validation, saves `data/gaia_tasks.json`.
 2. `agent.py` — the single agent config (web search via `web_search.py` + one Groq call) used everywhere below.
