@@ -22,10 +22,12 @@ from typing import Dict
 from web_search import web_search, format_search_context
 
 AGENT_MODEL = "llama-3.3-70b-versatile"
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-flash-latest"  # only model with nonzero free-tier quota on this
+# key/project (20 requests/day); gemini-2.0-flash and others return quota limit: 0.
 
 _groq_client = None
 _gemini_client = None
+_gemini_grounding_warned = False
 
 
 def _get_groq_client():
@@ -56,7 +58,7 @@ Give a short, direct final answer to the question. Do not explain your reasoning
 End your reply with exactly one line in this format:
 FINAL ANSWER: <answer>"""
 
-GEMINI_PROMPT = """You are an AI agent answering a benchmark question. Use Google Search
+GEMINI_GROUNDED_PROMPT = """You are an AI agent answering a benchmark question. Use Google Search
 to look up whatever facts you need -- do multiple searches if the question requires
 combining information from more than one source.
 
@@ -99,25 +101,79 @@ def _run_agent_groq(question: str, model: str, temperature: float, max_search_re
     }
 
 
-def _run_agent_gemini(question: str, model: str, temperature: float) -> Dict:
+def _gemini_text(response) -> str:
+    """
+    response.text can be None -- e.g. gemini-flash-latest enables "thinking" by
+    default, and if the thinking tokens eat the whole output budget the model
+    never emits a final answer. Log the reason and return "" instead of crashing.
+    """
+    if response.text is not None:
+        return response.text.strip()
+
+    reason = None
+    if response.candidates:
+        reason = response.candidates[0].finish_reason
+    print(f"[gemini] empty response text (finish_reason={reason}); treating as no answer")
+    return ""
+
+
+def _run_agent_gemini(question: str, model: str, temperature: float, max_search_results: int) -> Dict:
+    """
+    Try Gemini's native Google Search grounding first. That tool is gated behind
+    billing being enabled on the underlying Google Cloud project even on the
+    free API tier, so on quota/permission errors this falls back to the same
+    DuckDuckGo-snippet prompt used by the Groq backend -- still tests whether a
+    stronger model helps given the same search input, without requiring billing.
+    """
     from google.genai import types
 
+    # Keep config minimal -- adding max_output_tokens/thinking_config here was
+    # observed to sometimes trigger finish_reason=MALFORMED_FUNCTION_CALL with
+    # empty text on this model, even with no tools passed. Bare temperature-only
+    # config matches what was verified working in manual smoke tests.
+    gen_config_kwargs = dict(temperature=temperature)
+
     client = _get_gemini_client()
+    try:
+        response = client.models.generate_content(
+            model=model,
+            contents=GEMINI_GROUNDED_PROMPT.format(question=question),
+            config=types.GenerateContentConfig(
+                tools=[types.Tool(google_search=types.GoogleSearch())],
+                **gen_config_kwargs,
+            ),
+        )
+        raw = _gemini_text(response)
+        if raw:
+            return {
+                "question": question,
+                "answer": _extract_final_answer(raw),
+                "raw_response": raw,
+                "search_results": [],  # grounding metadata is on response.candidates[0], not surfaced here
+                "grounded": True,
+            }
+    except Exception as e:
+        global _gemini_grounding_warned
+        if not _gemini_grounding_warned:
+            print(f"[gemini] native grounding unavailable ({e}); falling back to DuckDuckGo snippets for all calls")
+            _gemini_grounding_warned = True
+
+    results = web_search(question, max_results=max_search_results)
+    context = format_search_context(results)
+    prompt = AGENT_PROMPT.format(question=question, context=context)
     response = client.models.generate_content(
         model=model,
-        contents=GEMINI_PROMPT.format(question=question),
-        config=types.GenerateContentConfig(
-            temperature=temperature,
-            tools=[types.Tool(google_search=types.GoogleSearch())],
-        ),
+        contents=prompt,
+        config=types.GenerateContentConfig(**gen_config_kwargs),
     )
-    raw = response.text.strip()
+    raw = _gemini_text(response)
 
     return {
         "question": question,
         "answer": _extract_final_answer(raw),
         "raw_response": raw,
-        "search_results": [],  # grounding metadata is on response.candidates[0], not surfaced here
+        "search_results": results,
+        "grounded": False,
     }
 
 
@@ -136,7 +192,7 @@ def run_agent(
     if backend == "groq":
         return _run_agent_groq(question, model or AGENT_MODEL, temperature, max_search_results)
     elif backend == "gemini":
-        return _run_agent_gemini(question, model or GEMINI_MODEL, temperature)
+        return _run_agent_gemini(question, model or GEMINI_MODEL, temperature, max_search_results)
     else:
         raise ValueError(f"Unknown backend {backend!r}, expected 'groq' or 'gemini'")
 
