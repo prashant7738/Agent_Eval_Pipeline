@@ -4,9 +4,11 @@ Four algorithms for the paper: ROUGE-L, Bradley-Terry/Elo, SelfCheckGPT, Cohen's
 plus the agent, GAIA loader, and human-study scripts that tie them together end to end.
 
 ## Setup
+Dependencies are managed with [uv](https://docs.astral.sh/uv/):
 ```
-python3 -m venv ../.venv && source ../.venv/bin/activate
-pip install -r requirements.txt
+cd files
+uv sync            # creates files/.venv from pyproject.toml + uv.lock
+uv run python agent.py   # runs any script inside the managed venv
 ```
 Fill in `files/.env`:
 ```
