@@ -87,7 +87,7 @@ def build_task_set(n_total: int = 18, seed: int = 42):
 
 if __name__ == "__main__":
     load_dotenv(Path(__file__).parent / ".env")
-    tasks = build_task_set()
+    tasks = build_task_set(n_total=30)  # Change 18 to 30
     print(f"Saved {len(tasks)} tasks to {OUT_PATH}")
     for t in tasks:
         print(f"  [L{t['level']}] {t['task_id']}: {t['question'][:80]}")

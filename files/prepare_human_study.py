@@ -20,6 +20,7 @@ from llm_judge import rubric_label
 DATA_DIR = Path(__file__).parent / "data"
 RESPONSES_PATH = DATA_DIR / "responses.json"
 SELFCHECK_PATH = DATA_DIR / "selfcheck_results.json"
+GAIA_TASKS_PATH = DATA_DIR / "gaia_tasks.json"
 
 POOL_PATH = DATA_DIR / "human_study_pool.json"
 CALIBRATION_CSV = DATA_DIR / "calibration_sheet.csv"
@@ -36,6 +37,13 @@ def build_pool():
     """Combine main responses and SelfCheckGPT samples into one labeling pool."""
     pool = []
 
+    # Load task reference answers for lookup
+    task_refs = {}
+    if GAIA_TASKS_PATH.exists():
+        with open(GAIA_TASKS_PATH) as f:
+            for task in json.load(f):
+                task_refs[task["task_id"]] = task["reference_answer"]
+
     with open(RESPONSES_PATH) as f:
         for r in json.load(f):
             pool.append({
@@ -51,12 +59,14 @@ def build_pool():
         with open(SELFCHECK_PATH) as f:
             for entry in json.load(f):
                 for j, sample in enumerate(entry["samples"]):
+                    # Look up reference answer from gaia_tasks.json if available
+                    ref_answer = task_refs.get(entry["task_id"], "")
                     pool.append({
                         "item_id": f"selfcheck_{entry['task_id']}_{j}",
                         "task_id": entry["task_id"],
                         "level": entry["level"],
                         "question": entry["question"],
-                        "reference_answer": "",  # not scored against a reference
+                        "reference_answer": ref_answer,
                         "response": sample,
                     })
 
@@ -64,7 +74,7 @@ def build_pool():
 
 
 def _write_csv(path, rows):
-    with open(path, "w", newline="") as f:
+    with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=CSV_FIELDS)
         writer.writeheader()
         for row in rows:
