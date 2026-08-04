@@ -1,6 +1,6 @@
 .venv/
 files/.env
-files/data/
 __pycache__/
 *.pyc
 *.log
+.~lock.*#
