@@ -11,6 +11,3 @@ dependencies = [
     "pyarrow>=15.0.0",
     "ddgs>=9.0.0",
 ]
-
-[project.optional-dependencies]
-gemini = ["google-genai>=1.0.0"]

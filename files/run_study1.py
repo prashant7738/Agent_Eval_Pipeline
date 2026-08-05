@@ -7,7 +7,6 @@ Run gaia_loader.py first to produce data/gaia_tasks.json.
 """
 
 import json
-import os
 import random
 import time
 from pathlib import Path
@@ -30,10 +29,6 @@ SELFCHECK_SUBSET_SIZE = 8
 SELFCHECK_K = 3
 SLEEP_BETWEEN_CALLS = 1.0  # be polite to the free-tier rate limit
 
-# "groq" (default, used for the saved Study 1 results) or "gemini" (native
-# Google Search grounding, needs GEMINI_API_KEY) -- see agent.py.
-AGENT_BACKEND = os.environ.get("AGENT_BACKEND", "groq")
-
 
 def load_tasks():
     with open(TASKS_PATH) as f:
@@ -45,7 +40,7 @@ def generate_responses(tasks):
     responses = []
     for i, task in enumerate(tasks, start=1):
         print(f"[{i}/{len(tasks)}] generating response for {task['task_id']}")
-        result = run_agent(task["question"], temperature=0.0, backend=AGENT_BACKEND)
+        result = run_agent(task["question"], temperature=0.0)
         responses.append({
             "task_id": task["task_id"],
             "level": task["level"],
@@ -92,7 +87,7 @@ def run_selfcheck_and_ranking(tasks, subset_size=SELFCHECK_SUBSET_SIZE, k=SELFCH
         print(f"[{i}/{len(subset)}] sampling k={k} responses for {task['task_id']}")
         samples = []
         for _ in range(k):
-            result = run_agent(task["question"], temperature=1.0, backend=AGENT_BACKEND)
+            result = run_agent(task["question"], temperature=1.0)
             samples.append(result["answer"])
             time.sleep(SLEEP_BETWEEN_CALLS)
 
