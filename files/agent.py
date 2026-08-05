@@ -22,7 +22,7 @@ from typing import Dict
 from web_search import web_search, format_search_context
 
 AGENT_MODEL = "llama-3.3-70b-versatile"
-GEMINI_MODEL = "gemini-flash-latest"  # only model with nonzero free-tier quota on this
+ GEMINI_MODEL = "gemini-flash-latest"  # only model with nonzero free-tier quota on this
 # key/project (20 requests/day); gemini-2.0-flash and others return quota limit: 0.
 
 _groq_client = None
