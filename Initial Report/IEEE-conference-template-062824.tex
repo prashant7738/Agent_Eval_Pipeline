@@ -28,7 +28,7 @@ sunil.080bct047@tcioe.edu.np}}
 \maketitle
 
 \begin{abstract}
-As language-model agents take on longer tasks, evaluating their outputs becomes a practical systems problem. Human assessment is expensive and difficult to repeat at scale, while automatic metrics can miss factual errors, useful reasoning, and task-specific quality. This paper reports on two linked but methodologically separate studies conducted on a shared benchmark of agent tasks sampled from GAIA \cite{mialon2023gaia}. Study 1 is a purely algorithmic comparison: ROUGE-L measures reference-based similarity with longest common subsequence dynamic programming, Bradley--Terry and Elo-style models convert pairwise judgments into rankings, and SelfCheckGPT uses disagreement among stochastic samples to detect possible hallucinations, applied to approximately 180 agent responses generated from 90 stratified GAIA tasks. Study 2 is a human--LLM judge agreement study: two trained human annotators and an LLM judge independently label a stratified subsample of 100 of those responses under a fixed four-category rubric, and Cohen's kappa measures whether the judge's decisions agree with a human-adjudicated standard beyond chance. The two studies share a single research question -- whether an LLM judge can be treated as a reliable measurement instrument rather than merely a convenient source of scores -- but are designed, sampled, and analyzed independently, so that an algorithmic result from Study 1 is never mistaken for evidence of judge validity in Study 2.
+As language-model agents take on longer tasks, evaluating their outputs becomes a practical systems problem. Human assessment is expensive and difficult to repeat at scale, while automatic metrics can miss factual errors, useful reasoning, and task-specific quality. This paper reports on two linked but methodologically separate studies conducted on a shared benchmark of agent tasks sampled from GAIA \cite{mialon2023gaia}. Study 1 is a purely algorithmic comparison: ROUGE-L measures reference-based similarity with longest common subsequence dynamic programming, Bradley--Terry and Elo-style models convert pairwise judgments into rankings, and SelfCheckGPT uses disagreement among stochastic samples to detect possible hallucinations, applied to 18 agent responses generated from 18 stratified GAIA tasks by a single agent configuration, together with a $k=3$ resampling of an 8-task subset used for the SelfCheckGPT and per-task Bradley--Terry analysis. Study 2 is a human--LLM judge agreement study: two trained human annotators and an LLM judge independently label a 30-item pool drawn from those responses and resamples under a fixed four-category rubric, and Cohen's kappa measures whether the judge's decisions agree with a human-adjudicated standard beyond chance. The two studies share a single research question -- whether an LLM judge can be treated as a reliable measurement instrument rather than merely a convenient source of scores -- but are designed, sampled, and analyzed independently, so that an algorithmic result from Study 1 is never mistaken for evidence of judge validity in Study 2.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -124,11 +124,11 @@ Both studies draw their agent tasks from the validation split of the GAIA benchm
 
 A GAIA task is included in the study if it satisfies all of the following criteria:
 \begin{itemize}
-\item it is answerable using only text and web-browsing/tool access available in the evaluation sandbox (tasks requiring image or audio file inputs the sandbox cannot process are excluded);
+\item it is text-only, i.e. answerable using only the question text and web search, with no attached image, audio, or document file (the evaluation sandbox provides a web-search tool, not general file processing);
 \item its published reference answer is a short, checkable string suitable for exact-match or ROUGE-L scoring;
-\item the agent under evaluation returns a non-empty final answer within a fixed budget of 15 tool calls and 10 minutes of wall-clock time; tasks that exceed this budget are logged as incomplete, excluded from reference-based scoring, but retained in the reported completion-rate statistics.
+\item the agent under evaluation returns a non-empty final answer using a bounded budget of web-search calls and a single LLM call.
 \end{itemize}
-Applying these criteria to the 165 validation tasks is expected to yield a working set of approximately 90 tasks, sampled proportionally across the three difficulty levels (approximately 30 Level 1, 40 Level 2, and 20 Level 3 tasks). Each included task is run through two fixed agent configurations (a baseline single-pass agent and a tool-augmented agent), producing approximately 180 agent responses that form the base dataset for Study 1. A further subset of 40 tasks, drawn proportionally from the same three levels, is resampled $k=5$ times per configuration to support the SelfCheckGPT consistency check.
+Applying these criteria to the GAIA validation split yielded a working set of 18 tasks, stratified across the three difficulty levels (6 Level 1, 8 Level 2, and 4 Level 3 tasks). Each included task is run through a single agent configuration -- one LLM call (Groq-hosted Llama 3.3 70B) augmented with DuckDuckGo web-search snippets -- producing 18 agent responses that form the base dataset for Study 1. The original proposal compared two agent configurations (a baseline and a tool-augmented variant); this was cut to one configuration to keep the study feasible within a six-day scope, so Study 1 reports how the four evaluation methods behave on a single agent rather than a cross-configuration comparison. A further subset of 8 tasks, drawn from the same 18, is resampled $k=3$ times to support the SelfCheckGPT consistency check and a per-task Bradley--Terry ranking of the three resamples.
 
 \subsection{Study 1: Algorithmic Comparison of Output-Evaluation Methods}
 \label{sec:study1}
@@ -137,13 +137,13 @@ Study 1 answers a purely algorithmic question: how do ROUGE-L, Bradley--Terry/El
 
 \subsubsection{Procedure}
 \begin{itemize}
-\item \textbf{Stage 1 -- Reference scoring.} ROUGE-L is computed between each of the approximately 180 agent responses and its GAIA reference answer using the LCS-based dynamic program. Wall-clock time per comparison and the full score distribution (mean, median, interquartile range) are recorded.
-\item \textbf{Stage 2 -- Pairwise ranking.} For each task, the two agent configurations' responses are compared pairwise by the LLM judge, and the resulting comparisons across all 90 tasks are fit with the Bradley--Terry model and an Elo-style update rule.
-\item \textbf{Stage 3 -- Consistency checking.} For the 40-task, $k=5$ resampled subset, SelfCheckGPT compares claims across the five samples per response and produces a consistency score per response. Wall-clock cost is additionally measured as a function of $k \in \{3,5,10\}$ on a pilot subset of 10 tasks.
+\item \textbf{Stage 1 -- Reference scoring.} ROUGE-L is computed between each of the 18 agent responses and its GAIA reference answer using the LCS-based dynamic program. The full score distribution (mean, median, count of non-zero scores) is recorded.
+\item \textbf{Stage 2 -- Pairwise ranking.} Because only one agent configuration is evaluated (Section~\ref{sec:data}), Bradley--Terry ranking is applied per task instead of across configurations: for each task in the 8-task SelfCheckGPT subset, the LLM judge compares the $k=3$ resampled responses pairwise, and a within-task Bradley--Terry strength is fit from the comparisons that survive a position-bias control (a comparison is kept only if the judge's verdict is unchanged when the response order is swapped).
+\item \textbf{Stage 3 -- Consistency checking.} For the same 8-task, $k=3$ resampled subset, SelfCheckGPT compares claims across the three samples per response and produces a consistency score per response.
 \end{itemize}
 
 \subsubsection{Statistical Analysis Plan}
-ROUGE-L scores and per-method running times are summarized descriptively (mean, median, interquartile range) and compared across the two agent configurations with a paired Wilcoxon signed-rank test, since scores from the same task under two configurations are paired rather than independent. Ranking stability is assessed by bootstrap-resampling the set of pairwise comparisons 500 times, refitting the Bradley--Terry model on each resample, and computing Kendall's $\tau$ rank correlation between each resampled ranking and the ranking obtained on the full comparison set; the mean and 95\% bootstrap confidence interval of $\tau$ are reported. SelfCheckGPT consistency scores are summarized descriptively and, for the subset of responses that also receive a human hallucination label in Study 2, correlated with that label using the point-biserial correlation coefficient as an external, non-circular check on the consistency signal.
+ROUGE-L scores are summarized descriptively (mean, median, count of non-zero scores) over the 18 tasks. Because only one agent configuration is evaluated, no paired cross-configuration test applies; the originally planned 500-resample bootstrap Kendall's $\tau$ over cross-configuration rankings is dropped for the same reason and reported here as a scope reduction rather than a result that was not run. Per-task Bradley--Terry fits are instead reported as a yield statistic: the fraction of the 8-task subset for which at least one position-bias-consistent comparison was obtained. SelfCheckGPT consistency scores are summarized descriptively and, for the same 8-task subset, compared qualitatively against the corresponding human hallucination labels from Study 2 as a small, non-circular sanity check; at $n=8$ the subset is too small to support a formal correlation test.
 
 \subsection{Study 2: Human--LLM Judge Agreement Study}
 \label{sec:study2}
@@ -151,7 +151,7 @@ ROUGE-L scores and per-method running times are summarized descriptively (mean, 
 Study 2 answers a different question from Study 1: does the LLM judge's categorical decision on a response agree with an independent human decision on the same response, beyond the agreement expected by chance? Study 2 is reported with its own subsample, its own annotators, and its own statistical test (Cohen's kappa), so that a favorable algorithmic result in Study 1 is never substituted for evidence of judge validity.
 
 \subsubsection{Sampling}
-A stratified subsample of 100 responses is drawn from the approximately 180 responses generated in Study 1, proportionally to the three GAIA difficulty levels and to the two agent configurations. This size keeps annotation load feasible for two annotators while remaining large enough to estimate kappa with a reasonably narrow confidence interval.
+A pool of 42 candidate items is built by combining the 18 main Study 1 responses with the 24 SelfCheckGPT resamples ($8$ tasks $\times$ $k=3$) from Section~\ref{sec:study1}, since the 18 main responses alone are fewer than the roadmap's 30-item annotation target. From this pool, 6 items are set aside for calibration and the remaining 30 are labeled by both annotators, each in an independently randomized order. This size keeps annotation load feasible for two annotators given the smaller, single-configuration task set actually used.
 
 \subsubsection{Rubric}
 Each response is labeled with exactly one of four categories, applied identically by both human annotators and the LLM judge: (1) \emph{Correct} -- matches the reference or task intent with no unsupported claims; (2) \emph{Partially correct} -- the main answer is right but includes a minor unsupported or extraneous claim; (3) \emph{Incorrect} -- the main answer does not match the reference or fails the task; (4) \emph{Hallucinated} -- the response contains a specific factual claim not supported by the reference, the retrieved tool output, or the task context.
@@ -159,23 +159,51 @@ Each response is labeled with exactly one of four categories, applied identicall
 \subsubsection{Annotation Protocol}
 The two human annotators are the paper's authors. Because their shared involvement in the project could inflate agreement, the protocol includes the following controls:
 \begin{itemize}
-\item \textbf{Calibration.} Both annotators jointly label a separate calibration set of 20 responses (disjoint from the 100-response sample), discuss disagreements, and refine the rubric wording before the main annotation round.
-\item \textbf{Independent, blind labeling.} For the 100-response sample, each annotator labels all responses independently, in an independently randomized order, without access to the LLM judge's labels or to the other annotator's labels.
+\item \textbf{Calibration.} Both annotators jointly label a separate calibration set of 6 responses (disjoint from the 30-item sample), discuss disagreements, and refine the rubric wording before the main annotation round.
+\item \textbf{Independent, blind labeling.} For the 30-item sample, each annotator labels all responses independently, in an independently randomized order, without access to the LLM judge's labels or to the other annotator's labels.
 \item \textbf{Human--human reliability precondition.} Cohen's kappa is computed between the two human annotators before any comparison with the LLM judge. If human--human kappa falls below 0.6 (the conventional threshold for ``substantial agreement'' on the Landis--Koch scale), the rubric is judged too unreliable to serve as a reference standard; it is revised and re-piloted on a fresh calibration set before Study 2 proceeds to the judge comparison.
 \item \textbf{Adjudication.} Where the two annotators disagree, an adjudicated label is produced through discussion. This adjudicated label, not either individual annotator's label, is the human reference standard used against the LLM judge.
 \end{itemize}
-The LLM judge labels the same 100 responses using the same rubric text, without access to either annotator's labels, in a single pass with prompt order randomized independently of the human annotation order.
+The LLM judge labels the same 30 items using the same rubric text, without access to either annotator's labels, in a single pass.
 
 \subsubsection{Statistical Analysis Plan}
-Two kappa statistics are reported, each with a 95\% bootstrap confidence interval computed over $2{,}000$ resamples of the 100 labeled responses:
+Two kappa statistics are reported as point estimates over the 30 labeled items, without a bootstrap confidence interval: at $n=30$, a $2{,}000$-resample bootstrap was judged unlikely to add reliable information relative to the roadmap's simplified reporting plan, so it is dropped here rather than reported as if it had been run.
 \begin{itemize}
 \item \emph{Human--human kappa}, comparing the two annotators before adjudication, reported as evidence that the rubric is applied reliably;
 \item \emph{Judge--human kappa}, comparing the LLM judge's labels with the adjudicated human labels, reported as the paper's central validity result.
 \end{itemize}
-Both statistics are reported alongside the full $4\times4$ confusion matrix and class counts, since kappa can be misleading when one category dominates the sample, and raw percent agreement is reported alongside kappa for the same reason. The rubric text, annotation instructions, and confusion matrices are intended to be released so that the kappa computation is independently checkable.
+Both statistics are reported alongside the full confusion matrix and class counts, since kappa can be misleading when one category dominates the sample, and raw observed percent agreement is reported alongside kappa for the same reason.
 
-\subsection{Threats to Validity}
-Threats specific to Study 1 include the limited size of the task set (90 tasks) relative to the diversity of real agent deployments, and the fact that only two agent configurations are compared, which limits how far the ranking-stability results generalize to other agent designs. Threats specific to Study 2 include the small number of human annotators (two, who are also the authors), which is mitigated by the calibration round, blind independent labeling, the human--human reliability precondition, and adjudication described above, though it cannot fully remove shared bias; prompt sensitivity of the LLM judge, mitigated by fixing the rubric text and prompt across all 100 responses; and the modest subsample size, mitigated by reporting bootstrap confidence intervals rather than a single kappa value. Both studies draw tasks from a single benchmark family (GAIA), so results are reported as a case study of the four methods on one benchmark rather than a claim of generality across all agent types or task domains.
+\section{Results}
+\label{sec:results}
+\subsection{Study 1 Results}
+On the 18-task set, ROUGE-L F1 has mean $0.086$ and median $0.0$: only 2 of the 18 responses have any lexical overlap with their reference answer at all (F1 of $0.55$ and $1.00$), and the remaining 16 score exactly $0$. This is consistent with a single-call agent backed only by DuckDuckGo search snippets failing GAIA's multi-hop lookups outright, rather than producing near-miss phrasing that ROUGE-L would underscore -- i.e. in this sample ROUGE-L's known weakness (penalizing correct paraphrase) is not the dominant failure mode; the agent itself is.
+
+On the 8-task, $k=3$ SelfCheckGPT subset, mean consistency is $0.125$, with 7 of 8 tasks scoring $0.0$ and one task scoring $1.0$. Per-task Bradley--Terry fitting, after the position-bias control described in Section~\ref{sec:study1}, produced at least one usable comparison for 5 of the 8 tasks; the remaining 3 tasks yielded zero position-consistent judge verdicts across all three sample pairs, so no ranking could be fit for them. Comparing the 8 SelfCheckGPT consistency scores against the corresponding Study 2 human hallucination labels (Section~\ref{sec:study2-results}) shows no simple correspondence: several samples the judge and humans separately labeled hallucinated still scored $0.0$ consistency, since near-identical wrong numeric guesses across resamples are scored as consistent by the lexical/semantic overlap check even though they are all incorrect. At $n=8$ this is reported descriptively as a limitation of the consistency signal in this sample, not as a formal negative correlation result.
+
+\subsection{Study 2 Results}
+\label{sec:study2-results}
+Human--human Cohen's kappa on the 30-item sample is $\kappa=0.7047$ (substantial agreement on the Landis--Koch scale), with observed agreement $0.8333$. This is above the paper's pre-registered $0.6$ threshold, so the rubric was not revised or re-piloted. The two annotators disagreed on 5 of 30 items, all instances of \emph{incorrect} vs.\ \emph{hallucinated}; these were adjudicated by discussion to produce the human reference standard.
+
+Judge--human kappa against the adjudicated labels is $\kappa=0.1327$ (slight agreement), with observed agreement $0.4333$. Table~\ref{tab:confusion} gives the confusion matrix. The judge agrees with the human standard on every \emph{correct} item (2/2) and every \emph{incorrect} item (11/11), but never outputs \emph{hallucinated}: all 17 items the human standard labeled \emph{hallucinated} were labeled \emph{incorrect} by the judge instead, and \emph{partial} was not used by either side in this sample. The low kappa is therefore driven by one specific, legible failure rather than by generally poor judge behavior: the judge reliably distinguishes right from wrong answers but does not distinguish a specific unsupported/fabricated claim from a plainly wrong one, collapsing two of the rubric's four categories into one.
+
+\begin{table}[h]
+\caption{Judge--human confusion matrix ($n=30$; rows = adjudicated human label, columns = judge label)}
+\label{tab:confusion}
+\centering
+\begin{tabular}{lccc}
+\hline
+ & correct & incorrect & hallucinated \\
+\hline
+correct & 2 & 0 & 0 \\
+incorrect & 0 & 11 & 0 \\
+hallucinated & 0 & 17 & 0 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Threats to Validity}
+Threats specific to Study 1 include the very small task set (18 tasks, and only 8 tasks for the SelfCheckGPT/Bradley--Terry subset) relative to the diversity of real agent deployments, and the fact that a single agent configuration is evaluated rather than two, so Study 1 reports how the four methods behave on one agent rather than a comparative ranking across designs. Near-zero ROUGE-L scores on 16 of 18 tasks mean the reference-based metric has little room left to discriminate among responses in this particular sample, which limits what can be concluded here about ROUGE-L's sensitivity specifically, as distinct from the agent's accuracy. Threats specific to Study 2 include the small number of human annotators (two, who are also the authors), mitigated by the calibration round, blind independent labeling, the human--human reliability precondition, and adjudication described above, though this cannot fully remove shared bias; prompt sensitivity of the LLM judge, mitigated by fixing the rubric text and prompt across all 30 items; and the small sample size ($n=30$), reported as point kappa estimates without a bootstrap confidence interval rather than an inflated 2,000-resample interval that the sample size does not support -- this is the paper's main statistical limitation and should be read as such. Both studies draw tasks from a single benchmark family (GAIA) and use a single LLM backend (Groq-hosted Llama 3.3 70B) for both the agent and the judge, so results are reported as a case study of the four methods on one benchmark and one model family rather than a claim of generality across agent types, task domains, or judge models.
 
 \section*{Acknowledgment}
 We thanks our Sir Rajad Shakya for his help and guidance.

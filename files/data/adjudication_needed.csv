@@ -1,0 +1,6 @@
+item_id,annotator1_label,annotator2_label,adjudicated_label
+main_8b3379c0-0981-4f5b-8407-6444610cb212,incorrect,hallucinated,hallucinated
+selfcheck_0bb3b44a-ede5-4db5-a520-4e844b0079c5_0,incorrect,hallucinated,hallucinated
+selfcheck_5f982798-16b9-4051-ab57-cfc7ebdb2a91_1,incorrect,hallucinated,hallucinated
+selfcheck_935e2cff-ae78-4218-b3f5-115589b19dae_0,hallucinated,incorrect,hallucinated
+selfcheck_d1af70ea-a9a4-421a-b9cc-94b5e02f1788_0,incorrect,hallucinated,hallucinated

@@ -15,6 +15,7 @@ at the bottom of this file.
 """
 
 import os
+import re
 
 JUDGE_MODEL = "llama-3.3-70b-versatile"
 
@@ -96,8 +97,9 @@ def rubric_label(task: str, reference: str, response: str, model: str = JUDGE_MO
     )
     raw = completion.choices[0].message.content.strip().lower()
 
+    # word-boundary match: plain substring would wrongly match "correct" inside "incorrect"
     for label in RUBRIC_LABELS:
-        if label in raw:
+        if re.search(rf"\b{label}\b", raw):
             return label
     return "incorrect"  # fallback if the model doesn't follow format; log these cases
 

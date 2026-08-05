@@ -41,6 +41,42 @@ primarily because of the model itself.
 
 All generated data lands in `files/data/` (gitignored).
 
+## Results (real GAIA data, Groq backend)
+
+### Study 1 — automatic metrics
+- **ROUGE-L F1**: mean = 0.086 (n = 18 tasks). Nearly all individual scores are 0 —
+  the single-call agent + shallow DuckDuckGo snippets can't do GAIA's multi-hop
+  lookups. This is a legitimate finding about the agent architecture, not a bug.
+- **SelfCheckGPT consistency**: mean = 0.125 (n = 8-task subset, k = 3 samples each).
+- Per-task Bradley-Terry ranking computed over the k samples for the same subset.
+
+Data: `data/responses.json`, `data/rouge_scores.json`, `data/selfcheck_results.json`.
+
+### Study 2 — human study (30-item pool: main responses + SelfCheckGPT samples)
+- **Human-human Cohen's kappa** (annotator1 vs annotator2): **0.7047** (substantial
+  agreement), observed agreement = 0.8333, n = 30. Above the 0.6 threshold, so no
+  rubric re-pilot was needed. 5 of 30 items were disagreements (all
+  incorrect-vs-hallucinated calls), adjudicated in `data/adjudication_needed.csv`.
+- **Judge-human Cohen's kappa** (LLM judge vs adjudicated human labels): **0.1327**
+  (slight agreement), observed agreement = 0.4333, n = 30.
+  Confusion matrix (rows = human, cols = judge):
+
+  | human \ judge | correct | partial | incorrect | hallucinated |
+  |---|---|---|---|---|
+  | correct | 2 | 0 | 0 | 0 |
+  | incorrect | 0 | 0 | 11 | 0 |
+  | hallucinated | 0 | 0 | 17 | 0 |
+
+  Reportable finding: the judge agrees perfectly with humans on `correct` (2/2) and
+  `incorrect` (11/11) but never outputs `hallucinated` — every human-labeled
+  "hallucinated" item was called `incorrect` by the judge instead. The judge model
+  reliably detects wrong answers but doesn't discriminate specific unsupported/
+  fabricated claims from plain wrongness. Worth a note in the paper's
+  discussion/limitations on LLM-as-judge label granularity.
+
+Data: `data/annotator1_sheet.csv`, `data/annotator2_sheet.csv`, `data/judge_labels.json`,
+`data/adjudication_needed.csv`, `data/final_human_labels.json`.
+
 ## Free LLM notes
 Using Groq (console.groq.com) — free tier, OpenAI-compatible, fast Llama models.
 Rate limits apply on the free tier (check console for current numbers) — if you hit

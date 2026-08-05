@@ -44,6 +44,14 @@ def human_human_kappa():
           f"observed={result['observed_agreement']}, n={result['n']}")
 
     disagreements = [i for i in item_ids if labels_a[i] != labels_b[i]]
+
+    # preserve any adjudicated_label already filled in from a previous run
+    existing_adjudications = {}
+    if ADJUDICATION_CSV.exists():
+        with open(ADJUDICATION_CSV) as f:
+            for row in csv.DictReader(f):
+                existing_adjudications[row["item_id"]] = row["adjudicated_label"].strip()
+
     with open(ADJUDICATION_CSV, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=["item_id", "annotator1_label", "annotator2_label", "adjudicated_label"])
         writer.writeheader()
@@ -52,7 +60,7 @@ def human_human_kappa():
                 "item_id": item_id,
                 "annotator1_label": labels_a[item_id],
                 "annotator2_label": labels_b[item_id],
-                "adjudicated_label": "",
+                "adjudicated_label": existing_adjudications.get(item_id, ""),
             })
     print(f"{len(disagreements)} disagreements written to {ADJUDICATION_CSV} for adjudication")
 
