@@ -39,7 +39,7 @@ def load_gaia_validation_metadata():
     return pd.read_parquet(path)
 
 
-def select_text_only_tasks(df, n_total: int = 18, seed: int = 42):
+def select_text_only_tasks(df, n_total: int = 100, seed: int = 42):
     """
     Filter to tasks with no attached file and no video/image dependency in the
     question text (text/web-only, per the paper's inclusion criteria), then
@@ -87,7 +87,7 @@ def build_task_set(n_total: int = 18, seed: int = 42):
 
 if __name__ == "__main__":
     load_dotenv(Path(__file__).parent / ".env")
-    tasks = build_task_set(n_total=30)  # Change 18 to 30
+    tasks = build_task_set(n_total=100)  # Load 100 tasks for Study 1
     print(f"Saved {len(tasks)} tasks to {OUT_PATH}")
     for t in tasks:
         print(f"  [L{t['level']}] {t['task_id']}: {t['question'][:80]}")
