@@ -310,5 +310,85 @@
     "reference_answer": "101.376, 84.348",
     "response": "800 CFM, 750 CFM",
     "raw_response": "800 CFM, 750 CFM"
+  },
+  {
+    "task_id": "a0c07678-e491-4bbc-8f0b-07405144218f",
+    "level": 1,
+    "question": "Who are the pitchers with the number before and after Taish\u014d Tamai's number as of July 2023? Give them to me in the form Pitcher Before, Pitcher After, use their last names only, in Roman characters.",
+    "reference_answer": "Yoshida, Uehara",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "708b99c5-e4a7-49cb-a5cf-933c8d46470d",
+    "level": 2,
+    "question": "On the DeepFruits fruit detection graph on Connected Papers from 2016, what feature caused the largest bubble to be the size it is?",
+    "reference_answer": "Citations",
+    "response": "number of citations",
+    "raw_response": "NUMBER OF CITATIONS\n\nFINAL ANSWER: number of citations"
+  },
+  {
+    "task_id": "384d0dd8-e8a4-4cfe-963c-d37f256e7662",
+    "level": 3,
+    "question": "In the NCATS PubChem compound database for Food Additive Status classification, find the compound that has a molecular weight of 100 g/mol or less, 6 heavy atoms, 1 or fewer hydrogen bond acceptors, and a complexity between 10 and 15. Of the shared gene-chemical co-occurrences between its two possible enzyme transformations, what is the PubChem CID of the heaviest by molecular weight?",
+    "reference_answer": "4192",
+    "response": "Status classification, find the compound that",
+    "raw_response": "Status classification, find the compound that"
+  },
+  {
+    "task_id": "5d0080cb-90d7-4712-bc33-848150e917d3",
+    "level": 1,
+    "question": "What was the volume in m^3 of the fish bag that was calculated in the University of Leicester paper \"Can Hiccup Supply Enough Fish to Maintain a Dragon\u2019s Diet?\"",
+    "reference_answer": "0.1777",
+    "response": "0.17",
+    "raw_response": "FINAL ANSWER: 0.17"
+  },
+  {
+    "task_id": "48eb8242-1099-4c26-95d4-ef22b002457a",
+    "level": 2,
+    "question": "How many nonindigenous crocodiles were found in Florida from the year 2000 through 2020? You can get the data from the USGS Nonindigenous Aquatic Species database.",
+    "reference_answer": "6",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "dc22a632-937f-4e6a-b72f-ba0ff3f5ff97",
+    "level": 1,
+    "question": "What was the complete title of the book in which two James Beard Award winners recommended the restaurant where Ali Khan enjoyed a New Mexican staple in his cost-conscious TV show that started in 2015? Write the numbers in plain text if there are some in the title.",
+    "reference_answer": "Five Hundred Things To Eat Before It's Too Late: and the Very Best Places to Eat Them",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "46719c30-f4c3-4cad-be07-d5cb21eee6bb",
+    "level": 1,
+    "question": "Of the authors (First M. Last) that worked on the paper \"Pie Menus or Linear Menus, Which Is Better?\" in 2015, what was the title of the first paper authored by the one that had authored prior papers?",
+    "reference_answer": "Mapping Human Oriented Information to Software Agents for Online Systems Usage",
+    "response": "Mapping Human Oriented Information to Software Agents for Online Systems Usage",
+    "raw_response": "FINAL ANSWER: Mapping Human Oriented Information to Software Agents for Online Systems Usage"
+  },
+  {
+    "task_id": "71345b0a-9c7d-4b50-b2bf-937ec5879845",
+    "level": 2,
+    "question": "On a leap day before the year 2008, a joke was removed from the Wikipedia page for \u201cDragon\u201d. What was the phrase that was removed? Give the phrase as it appeared on the page, but without punctuation.",
+    "reference_answer": "Here be dragons",
+    "response": "Imagine if dragons were real that would be cool",
+    "raw_response": "FINAL ANSWER: Imagine if dragons were real that would be cool"
+  },
+  {
+    "task_id": "56db2318-640f-477a-a82f-bc93ad13e882",
+    "level": 3,
+    "question": "The following numbers function similarly to ISBN 13 numbers, however, their validation methods are slightly different. Rather than using alternate weights of 1 and 3, the checksum digit is calculated with an alternate weight of 1 and some other positive integer less than 10. Otherwise, the checksum digit is calculated as expected. Unfortunately, there is an error in the data. Two adjacent columns have been transposed. These errored columns do not involve the final column or one of the first three columns. Using this information, please provide all potential solutions with the unknown weight and the smaller index of the two errored columns (assume we start our indexing at 0 and ignore hyphens). Give your answer in the form x, y where x is the weight and y is the smaller index of the two transposed columns.\n\n978-354181391-9\n978-946669746-1\n978-398036139-6\n978-447656680-4\n978-279586664-7\n978-595073693-3\n978-976647652-6\n978-591178125-5\n978-728465924-5\n978-414825155-9",
+    "reference_answer": "7, 9",
+    "response": "7, 5",
+    "raw_response": "FINAL ANSWER: 7, 5"
+  },
+  {
+    "task_id": "d0633230-7067-47a9-9dbf-ee11e0a2cdd6",
+    "level": 1,
+    "question": "In the Scikit-Learn July 2017 changelog, what other predictor base command received a bug fix? Just give the name, not a path.",
+    "reference_answer": "BaseLabelPropagation",
+    "response": "BaseLabelPropagation",
+    "raw_response": "FINAL ANSWER: BaseLabelPropagation"
   }
 ]
