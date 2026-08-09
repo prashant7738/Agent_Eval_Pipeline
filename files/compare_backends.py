@@ -61,7 +61,8 @@ def generate_gemini_responses(subset):
     if GEMINI_RESPONSES_PATH.exists():
         with open(GEMINI_RESPONSES_PATH) as f:
             responses = json.load(f)
-    done_ids = {r["task_id"] for r in responses}
+    # exclude blank responses (Gemini returned no text, e.g. safety block/malformed) so they get retried
+    done_ids = {r["task_id"] for r in responses if r["response"]}
 
     for i, task in enumerate(subset, start=1):
         if task["task_id"] in done_ids:
@@ -79,6 +80,7 @@ def generate_gemini_responses(subset):
                 print(f"  attempt {attempt} failed ({e}), sleeping 65s before retry")
                 time.sleep(65)
 
+        responses = [r for r in responses if r["task_id"] != task["task_id"]]
         responses.append({
             "task_id": task["task_id"],
             "level": task["level"],
