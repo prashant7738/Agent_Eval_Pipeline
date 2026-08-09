@@ -1,0 +1,314 @@
+[
+  {
+    "task_id": "04a04a9b-226c-43fd-b319-d5e89743676f",
+    "level": 2,
+    "question": "If we assume all articles published by Nature in 2020 (articles, only, not book reviews/columns, etc) relied on statistical significance to justify their findings and they on average came to a p-value of 0.04, how many papers would be incorrect as to their claims of statistical significance? Round the value up to the next integer.",
+    "reference_answer": "41",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "72c06643-a2fa-4186-aa5c-9ec33ae9b445",
+    "level": 3,
+    "question": "What is the volume in milliliters of a system comprised of 0.312 kg Freon-12 refrigerant when placed at the bottom of the Marianas Trench and allowed to stabilize at the Trench's peak temperature, rounded to the nearest mL? Provide your answer as just an integer value.",
+    "reference_answer": "55",
+    "response": "To find the volume of 0.3",
+    "raw_response": "To find the volume of 0.3"
+  },
+  {
+    "task_id": "ed58682d-bc52-4baa-9eb0-4eb81e1edacc",
+    "level": 2,
+    "question": "What is the last word before the second chorus of the King of Pop's fifth single from his sixth studio album?",
+    "reference_answer": "stare",
+    "response": "night",
+    "raw_response": "FINAL ANSWER: night"
+  },
+  {
+    "task_id": "e0c10771-d627-4fd7-9694-05348e54ee36",
+    "level": 2,
+    "question": "Take the gender split from the 2011 Bulgarian census about those who have completed tertiary education. Subtract the smaller number from the larger number, then return the difference in thousands of women. So if there were 30.1 thousand more men, you'd give \"30.1\"",
+    "reference_answer": "234.9",
+    "response": "234.9",
+    "raw_response": "FINAL ANSWER: 234.9"
+  },
+  {
+    "task_id": "5f982798-16b9-4051-ab57-cfc7ebdb2a91",
+    "level": 3,
+    "question": "I read a paper about multiwavelength observations of fast radio bursts back in March 2021 on Arxiv, and it had a fascinating diagram of an X-ray time profile. There was a similar burst-1 diagram in another paper from one of the same authors about fast radio bursts back in July 2020, but I can't recall what the difference in seconds in the measured time span was. How many more seconds did one measure than the other? Just give the number.",
+    "reference_answer": "0.2",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "c714ab3a-da30-4603-bacd-d008800188b9",
+    "level": 1,
+    "question": "You are Van Helsing, a renowned vampire hunter. A Count of Moldova, La\u021bcu IV, son of  Costea, has tasked you with investigating the village of \u0218irnea in neighboring Wallachia. The Count's advisors have reported that a vampire was spotted crossing the border near the village, and would like you to investigate it.\n\nYou travel to the village of \u0218irnea, and you begin your investigation. One night, just before dawn, you catch a glimpse of a man in a long black cape with red lining leaping from roof-top to roof-top with superhuman agility. It's a vampire! You try to chase the creature back to its home, but the creature is too fast. However, because of the remoteness of the village, you know with absolute certainty that the vampire must be a resident of the village. You decide that your best course of action will be to visit all 100 residents of the town during the day. You know something about vampires and humans that will make your investigation possible; humans always tell the truth, but vampires always lie.\n\nIn the afternoon, you go from house to house, speaking with all 100 residents of \u0218irnea. You ask everyone the same question: \"How many vampires are living in \u0218irnea\". Everyone in the village gives the same response, \"At least one of us is a human.\"\n\nHow many residents of \u0218irnea have been turned into vampires?",
+    "reference_answer": "100",
+    "response": "To minimize harm and maximize the welfare of",
+    "raw_response": "To minimize harm and maximize the welfare of"
+  },
+  {
+    "task_id": "2dfc4c37-fec1-4518-84a7-10095d30ad75",
+    "level": 2,
+    "question": "According to Box Office Mojo's 2020 Worldwide Box Office list, how many of the top 10 highest-grossing worldwide movies are also on the top 10 highest-grossing domestic movies? Your answer should be a numerical integer value.",
+    "reference_answer": "6",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "b816bfce-3d80-4913-a07d-69b752ce6377",
+    "level": 1,
+    "question": "In Emily Midkiff's June 2014 article in a journal named for the one of Hreidmar's sons that guarded his house, what word was quoted from two different authors in distaste for the nature of dragon depictions?",
+    "reference_answer": "fluffy",
+    "response": "fluffy",
+    "raw_response": "FINAL ANSWER: fluffy"
+  },
+  {
+    "task_id": "ebbc1f13-d24d-40df-9068-adcf735b4240",
+    "level": 3,
+    "question": "The Latin root of the Yola word \"gimlie\" shares a spelling with a Spanish word. What is the Google translation of the source title for the 1994 example sentence for that word in the Collins Spanish-to-English dictionary online? Answer in plain text, without punctuation.",
+    "reference_answer": "The World of the Twenty First Century",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "ec09fa32-d03f-4bf8-84b0-1f16922c3ae4",
+    "level": 1,
+    "question": "Here's a fun riddle that I think you'll enjoy.\n\nYou have been selected to play the final round of the hit new game show \"Pick That Ping-Pong\". In this round, you will be competing for a large cash prize. Your job will be to pick one of several different numbered ping-pong balls, and then the game will commence. The host describes how the game works.\n\nA device consisting of a winding clear ramp and a series of pistons controls the outcome of the game. The ramp feeds balls onto a platform. The platform has room for three ping-pong balls at a time. The three balls on the platform are each aligned with one of three pistons. At each stage of the game, one of the three pistons will randomly fire, ejecting the ball it strikes. If the piston ejects the ball in the first position on the platform the balls in the second and third position on the platform each advance one space, and the next ball on the ramp advances to the third position. If the piston ejects the ball in the second position, the ball in the first position is released and rolls away, the ball in the third position advances two spaces to occupy the first position, and the next two balls on the ramp advance to occupy the second and third positions on the platform. If the piston ejects the ball in the third position, the ball in the first position is released and rolls away, the ball in the second position advances one space to occupy the first position, and the next two balls on the ramp advance to occupy the second and third positions on the platform.\n\nThe ramp begins with 100 numbered ping-pong balls, arranged in ascending order from 1 to 100. The host activates the machine and the first three balls, numbered 1, 2, and 3, advance to the platform. Before the random firing of the pistons begins, you are asked which of the 100 balls you would like to pick. If your pick is ejected by one of the pistons, you win the grand prize, $10,000.\n\nWhich ball should you choose to maximize your odds of winning the big prize? Please provide your answer as the number of the ball selected.",
+    "reference_answer": "3",
+    "response": "- Ball at",
+    "raw_response": "NOT ejected).\n  - Ball at"
+  },
+  {
+    "task_id": "872bfbb1-9ccf-49f6-8c5f-aa22818ccd66",
+    "level": 3,
+    "question": "Which of the fruits shown in the 2008 painting \"Embroidery from Uzbekistan\" were served as part of the October 1949 breakfast menu for the ocean liner that was later used as a floating prop for the film \"The Last Voyage\"? Give the items as a comma-separated list, ordering them in clockwise order based on their arrangement in the painting starting from the 12 o'clock position. Use the plural form of each fruit.",
+    "reference_answer": "pears, bananas",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "cabe07ed-9eca-40ea-8ead-410ef5e83f91",
+    "level": 1,
+    "question": "What is the surname of the equine veterinarian mentioned in 1.E Exercises from the chemistry materials licensed by Marisa Alviar-Agnew & Henry Agnew under the CK-12 license in LibreText's Introductory Chemistry materials as compiled 08/21/2023?",
+    "reference_answer": "Louvrier",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "2a649bb1-795f-4a01-b3be-9a01868dae73",
+    "level": 2,
+    "question": "What are the EC numbers of the two most commonly used chemicals for the virus testing method in the paper about SPFMV and SPCSV in the Pearl Of Africa from 2016? Return the semicolon-separated numbers in the order of the alphabetized chemicals.",
+    "reference_answer": "3.1.3.1; 1.11.1.7",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "20194330-9976-4043-8632-f8485c6c71b2",
+    "level": 2,
+    "question": "The YouTube channel Game Grumps began a Let\u2019s Play of the game Sonic the Hedgehog (2006) in the year 2012. Thirty seconds into the first episode, a phrase is shown on the screen in white letters on a red background. How many times does the letter \"E\" appear in this phrase?",
+    "reference_answer": "4",
+    "response": "10",
+    "raw_response": "FINAL ANSWER: 10"
+  },
+  {
+    "task_id": "840bfca7-4f7b-481a-8794-c560c340185d",
+    "level": 1,
+    "question": "On June 6, 2023, an article by Carolyn Collins Petersen was published in Universe Today. This article mentions a team that produced a paper about their observations, linked at the bottom of the article. Find this paper. Under what NASA award number was the work performed by R. G. Arendt supported by?",
+    "reference_answer": "80GSFC21M0002",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "08c0b6e9-1b43-4c2e-ae55-4e3fce2c2715",
+    "level": 2,
+    "question": "In the film Goldfinger, what color was the object that James Bond concealed himself and his companion Pussy Galore at the end of the film? If there are multiple colors, put them in a comma-separated list in alphabetical order.",
+    "reference_answer": "orange, white",
+    "response": "Let's double check",
+    "raw_response": "yellow\n\nLet's double check"
+  },
+  {
+    "task_id": "d700d50d-c707-4dca-90dc-4528cddd0c80",
+    "level": 2,
+    "question": "Who composed the song that was performed by a rooster and a hamster in separate animated videos at separate tempos with different lyrics? Answer using the format First name Last name.",
+    "reference_answer": "Roger Miller",
+    "response": "Roger Miller",
+    "raw_response": "FINAL ANSWER: Roger Miller"
+  },
+  {
+    "task_id": "305ac316-eef6-4446-960a-92d80d542f82",
+    "level": 1,
+    "question": "Who did the actor who played Ray in the Polish-language version of Everybody Loves Raymond play in Magda M.? Give only the first name.",
+    "reference_answer": "Wojciech",
+    "response": "Wojciech",
+    "raw_response": "FINAL ANSWER: Wojciech"
+  },
+  {
+    "task_id": "b9763138-c053-4832-9f55-86200cb1f99c",
+    "level": 2,
+    "question": "Compute the check digit the Tropicos ID for the Order Helotiales would have if it were an ISBN-10 number.",
+    "reference_answer": "3",
+    "response": "10 \\cdot d_1 +",
+    "raw_response": "10 \\cdot d_1 +"
+  },
+  {
+    "task_id": "6f37996b-2ac7-44b0-8e68-6d28256631b4",
+    "level": 1,
+    "question": "Given this table defining * on the set S = {a, b, c, d, e}\n\n|*|a|b|c|d|e|\n|---|---|---|---|---|---|\n|a|a|b|c|b|d|\n|b|b|c|a|e|c|\n|c|c|a|b|b|a|\n|d|b|e|b|e|d|\n|e|d|b|a|d|c|\n\nprovide the subset of S involved in any possible counter-examples that prove * is not commutative. Provide your answer as a comma separated list of the elements in the set in alphabetical order.",
+    "reference_answer": "b, e",
+    "response": "Check pairs $(x, y)$ where $",
+    "raw_response": "Check pairs $(x, y)$ where $"
+  },
+  {
+    "task_id": "ad37a656-079a-49f9-a493-7b739c9167d1",
+    "level": 2,
+    "question": "On July 15, 2008, Phys.org published an article about a catastrophe. Find the explosive force of this catastrophe according to Encyclopedia Britannica, then find the name of the US nuclear test that had the same yield. Your answer should only be the last word of the name of the test.",
+    "reference_answer": "Bravo",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "50f58759-7bd6-406f-9b0d-5692beb2a926",
+    "level": 3,
+    "question": "How many times was a Twitter/X post cited as a reference on the english Wikipedia pages for each day of August in the last June 2023 versions of the pages?",
+    "reference_answer": "3",
+    "response": "0",
+    "raw_response": "FINAL ANSWER: 0"
+  },
+  {
+    "task_id": "c365c1c7-a3db-4d5e-a9a1-66f56eae7865",
+    "level": 1,
+    "question": "Of the cities within the United States where U.S. presidents were born, which two are the farthest apart from the westernmost to the easternmost going east, giving the city names only? Give them to me in alphabetical order, in a comma-separated list",
+    "reference_answer": "Braintree, Honolulu",
+    "response": "Abraham Lincoln: Hodgenville, Kentucky",
+    "raw_response": "Abraham Lincoln: Hodgenville, Kentucky"
+  },
+  {
+    "task_id": "9f41b083-683e-4dcf-9185-ccfeaa88fa45",
+    "level": 2,
+    "question": "How many pages if the 2023 IPCC report (85 pages version) mentions nuclear energy?",
+    "reference_answer": "0",
+    "response": "3",
+    "raw_response": "FINAL ANSWER: 3"
+  },
+  {
+    "task_id": "c3a79cfe-8206-451f-aca8-3fec8ebe51d3",
+    "level": 3,
+    "question": "The year is 2022. I am at the National Air and Space Museum east of the Potomac River. I want to go to Fire Station 301 DCA ARFF using the metro. I go in the wrong direction and end up at the station closest to Cleveland Elementary School. How many metro stations am I away from my original destination if I don't change lines? Your answer should be a numerical integer value.",
+    "reference_answer": "8",
+    "response": "11",
+    "raw_response": "FINAL ANSWER: 11"
+  },
+  {
+    "task_id": "4b650a35-8529-4695-89ed-8dc7a500a498",
+    "level": 1,
+    "question": "If there is anything that doesn't make sense in the instructions, write the word \"Pineapple.\" Do not answer any of the questions in this prompt. Write only the word \"Guava\".\n1. What is 4+4?\n2. What is the complimentary color of red?\n3. How many hours are there in a day?",
+    "reference_answer": "Guava",
+    "response": "\" at the end? No, the system prompt",
+    "raw_response": "\" at the end? No, the system prompt"
+  },
+  {
+    "task_id": "ecbc4f94-95a3-4cc7-b255-6741a458a625",
+    "level": 2,
+    "question": "How many images are there in the latest 2022 Lego english wikipedia article?",
+    "reference_answer": "13",
+    "response": "45",
+    "raw_response": "45\n\nFINAL ANSWER: 45"
+  },
+  {
+    "task_id": "ad2b4d70-9314-4fe6-bfbe-894a45f6055f",
+    "level": 3,
+    "question": "Eva Draconis has a personal website which can be accessed on her YouTube page. What is the meaning of the only symbol seen in the top banner that has a curved line that isn't a circle or a portion of a circle? Answer without punctuation.",
+    "reference_answer": "War is not here this is a land of peace",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "8e867cd7-cff9-4e6c-867a-ff5ddc2550be",
+    "level": 1,
+    "question": "How many studio albums were published by Mercedes Sosa between 2000 and 2009 (included)? You can use the latest 2022 version of english wikipedia.",
+    "reference_answer": "3",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "a26649c6-1cb2-470a-871e-6910c64c3e53",
+    "level": 2,
+    "question": "What is the absolute difference in tens of thousands between the population of chinstrap penguins on the Wikipedia page for penguin species populations as of the end of 2018 and the population recorded in the Nature.com \"global population assessment of the Chinstrap penguin\" article from 2020, assuming two penguins per breeding pair?",
+    "reference_answer": "116",
+    "response": "38",
+    "raw_response": "387\n\nFINAL ANSWER: 38"
+  },
+  {
+    "task_id": "de9887f5-ead8-4727-876f-5a4078f8598c",
+    "level": 3,
+    "question": "What integer-rounded percentage of the total length of the harlequin shrimp recorded in Omar Valencfia-Mendez 2017 paper was the sea star fed to the same type of shrimp in G. Curt Fiedler's 2002 paper?",
+    "reference_answer": "22",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "bda648d7-d618-4883-88f4-3466eabd860e",
+    "level": 1,
+    "question": "Where were the Vietnamese specimens described by Kuznetzov in Nedoshivina's 2010 paper eventually deposited? Just give me the city name without abbreviations.",
+    "reference_answer": "Saint Petersburg",
+    "response": "Saint Petersburg",
+    "raw_response": "Saint Petersburg\n\nFINAL ANSWER: Saint Petersburg"
+  },
+  {
+    "task_id": "db4fd70a-2d37-40ea-873f-9433dc5e301f",
+    "level": 2,
+    "question": "As of May 2023, how many stops are between South Station and Windsor Gardens on MBTA\u2019s Franklin-Foxboro line (not included)?",
+    "reference_answer": "10",
+    "response": "10",
+    "raw_response": "FINAL ANSWER: 10"
+  },
+  {
+    "task_id": "0bdb7c40-671d-4ad1-9ce3-986b159c0ddc",
+    "level": 3,
+    "question": "In NASA's Astronomy Picture of the Day on 2006 January 21, two astronauts are visible, with one appearing much smaller than the other. As of August 2023, out of the astronauts in the NASA Astronaut Group that the smaller astronaut was a member of, which one spent the least time in space, and how many minutes did he spend in space, rounded to the nearest minute? Exclude any astronauts who did not spend any time in space. Give the last name of the astronaut, separated from the number of minutes by a semicolon.",
+    "reference_answer": "White; 5876",
+    "response": "",
+    "raw_response": ""
+  },
+  {
+    "task_id": "42576abe-0deb-4869-8c63-225c2d75a95a",
+    "level": 1,
+    "question": "In the fictional language of Tizin, basic sentences are arranged with the Verb first, followed by the direct object, followed by the subject of the sentence. I want to express my love for apples to my Tizin friend. \n\nThe word that indicates oneself is \"Pa\" is the nominative form, \"Mato\" is the accusative form, and \"Sing\" is the genitive form. \n\nThe root verb that indicates an intense like for something is \"Maktay\". When it is used in the present, it is used in it's root form, when it is used in the preterit past, it is \"Tay\", and when it is used in the imperfect past, it is \"Aktay\". It is used differently than in English, and is better translated as \"is pleasing to\", meaning that the thing doing the liking is actually the object of the sentence rather than the subject.\n\nThe word for apples is borrowed from English in Tizin, and so it is \"Apple\" is the nominative form, \"Zapple\" is the accusative form, and \"Izapple\" is the genitive form. \n\nPlease translate \"I like apples\" to Tizin.",
+    "reference_answer": "Maktay mato apple",
+    "response": "Maktay mato",
+    "raw_response": "FINAL ANSWER: Maktay mato"
+  },
+  {
+    "task_id": "9e1fc53b-46ff-49a1-9d05-9e6faac34cc5",
+    "level": 3,
+    "question": "A 5-man group made up of one tank, one healer, and three DPS is doing a dungeon that was just released in World of Warcraft. Two are plate wearers and two are cloth wearers. At the final boss, both the tank and the healer are casting holy spells. Ice and fire are being used, each one by a different DPS. A bear from the group is attacking the boss. Metamorphosis is cast. The Kilt of the Forgotten One drops as loot, but no one can use it. If all classes were using their class abilities and all classes are unique, what are the five classes in the group in alphabetical order separated by commas?",
+    "reference_answer": "Death Knight, Hunter, Paladin, Priest, Warlock",
+    "response": "Death Knight, Demon Hunter, Druid, Evoker",
+    "raw_response": "Death Knight, Demon Hunter, Druid, Evoker"
+  },
+  {
+    "task_id": "b415aba4-4b68-4fc6-9b89-2c812e55a3e1",
+    "level": 1,
+    "question": "In Nature journal's Scientific Reports conference proceedings from 2012, in the article that did not mention plasmons or plasmonics, what nano-compound is studied? Don't use the prefix nano in your answer if there is one.",
+    "reference_answer": "diamond",
+    "response": "metallic nanotip arrays",
+    "raw_response": "FINAL ANSWER: metallic nanotip arrays"
+  },
+  {
+    "task_id": "a7feb290-76bb-4cb7-8800-7edaf7954f2f",
+    "level": 2,
+    "question": "How many High Energy Physics - Lattice articles listed in January 2020 on Arxiv had ps versions available?",
+    "reference_answer": "31",
+    "response": "0",
+    "raw_response": "FINAL ANSWER: 0"
+  },
+  {
+    "task_id": "8131e2c0-0083-4265-9ce7-78c2d568425d",
+    "level": 3,
+    "question": "I was trying to remember how well the Cheater Beater performed in comparison to the Cheater when James tested it on his channel. I know that the Cheater still outperformed the Cheater Beater in terms of CFM. Could you please look that up for me, and report the CFM of both the Cheater and the Cheater Beater? I'm not sure if he made any changes to his testing, but this was back in season 4, so just report the value from that season. Please format your response like this: CFM number for Cheater, CFM number for Cheater beater",
+    "reference_answer": "101.376, 84.348",
+    "response": "800 CFM, 750 CFM",
+    "raw_response": "800 CFM, 750 CFM"
+  }
+]

@@ -1,8 +1,11 @@
 """
-The single agent config used for the whole study (per roadmap.txt Day 1: "use
-one simple agent config -- a single LLM call with web search -- instead of two").
+The agent config(s) used for the study. Default is Groq (per roadmap.txt Day 1:
+"use one simple agent config -- a single LLM call with web search -- instead of
+two"); an optional Gemini backend was added later for a backend comparison.
 
-DuckDuckGo snippets (web_search.py) stuffed into one Groq chat completion.
+Groq path: DuckDuckGo snippets (web_search.py) stuffed into one Groq chat completion.
+Gemini path: native Google Search grounding, falling back to the same DuckDuckGo
+snippet-stuffing approach if grounding fails (free-tier quota, transient errors, etc).
 
 Pipeline per task: search for context, feed the question + context to the LLM
 in one call, ask for a short final answer in a fixed format so it can be
@@ -16,8 +19,10 @@ from typing import Dict
 from web_search import web_search, format_search_context
 
 AGENT_MODEL = "llama-3.3-70b-versatile"
+GEMINI_MODEL = "gemini-flash-latest"  # only free-tier model confirmed accessible on this key
 
 _groq_client = None
+_gemini_client = None
 
 
 def _get_groq_client():
@@ -26,6 +31,14 @@ def _get_groq_client():
         from groq import Groq
         _groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
     return _groq_client
+
+
+def _get_gemini_client():
+    global _gemini_client
+    if _gemini_client is None:
+        from google import genai
+        _gemini_client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+    return _gemini_client
 
 
 AGENT_PROMPT = """You are an AI agent answering a benchmark question. You may use the
@@ -53,11 +66,26 @@ def _extract_final_answer(text: str) -> str:
 
 def run_agent(
     question: str,
+    backend: str = "groq",
     model: str = None,
     temperature: float = 0.0,
     max_search_results: int = 5,
 ) -> Dict:
-    """Run the single-call agent on one question: search -> one Groq call -> parsed answer."""
+    """Run the single-call agent on one question: search -> one LLM call -> parsed answer."""
+    if backend == "groq":
+        return _run_agent_groq(question, model=model, temperature=temperature, max_search_results=max_search_results)
+    elif backend == "gemini":
+        return _run_agent_gemini(question, model=model, temperature=temperature, max_search_results=max_search_results)
+    else:
+        raise ValueError(f"Unknown backend: {backend!r} (expected 'groq' or 'gemini')")
+
+
+def _run_agent_groq(
+    question: str,
+    model: str = None,
+    temperature: float = 0.0,
+    max_search_results: int = 5,
+) -> Dict:
     results = web_search(question, max_results=max_search_results)
     context = format_search_context(results)
     prompt = AGENT_PROMPT.format(question=question, context=context)
@@ -74,6 +102,70 @@ def run_agent(
     return {
         "question": question,
         "answer": _extract_final_answer(raw),
+        "raw_response": raw,
+        "search_results": results,
+    }
+
+
+def _run_agent_gemini(
+    question: str,
+    model: str = None,
+    temperature: float = 0.0,
+    max_search_results: int = 5,
+    use_grounding: bool = False,
+) -> Dict:
+    """DuckDuckGo snippet-stuffing by default (same approach as the Groq path), so the
+    two backends are directly comparable. Native Google Search grounding is opt-in via
+    use_grounding=True, but confirmed 429/RESOURCE_EXHAUSTED on this free-tier key as of
+    2026-08-09 -- leave it off by default so it doesn't burn scarce quota on every call."""
+    from google.genai import types
+
+    client = _get_gemini_client()
+    gemini_model = model or GEMINI_MODEL
+
+    if use_grounding:
+        try:
+            grounding_tool = types.Tool(google_search=types.GoogleSearch())
+            response = client.models.generate_content(
+                model=gemini_model,
+                contents=AGENT_PROMPT.format(question=question, context="(using live Google Search grounding)"),
+                config=types.GenerateContentConfig(
+                    tools=[grounding_tool],
+                    temperature=temperature,
+                    max_output_tokens=300,
+                ),
+            )
+            if response.text is None:
+                raise ValueError(f"empty grounded response, finish_reason={response.candidates[0].finish_reason if response.candidates else None!r}")
+            raw = response.text.strip()
+            return {
+                "question": question,
+                "answer": _extract_final_answer(raw),
+                "raw_response": raw,
+                "search_results": [],
+            }
+        except Exception as e:
+            print(f"[agent] Gemini grounding failed ({e!r}), falling back to DuckDuckGo snippets")
+
+    results = web_search(question, max_results=max_search_results)
+    context = format_search_context(results)
+    prompt = AGENT_PROMPT.format(question=question, context=context)
+
+    response = client.models.generate_content(
+        model=gemini_model,
+        contents=prompt,
+        config=types.GenerateContentConfig(temperature=temperature, max_output_tokens=300),
+    )
+    if response.text is None:
+        finish_reason = response.candidates[0].finish_reason if response.candidates else None
+        print(f"[agent] Gemini fallback also returned no text, finish_reason={finish_reason!r}")
+        raw = ""
+    else:
+        raw = response.text.strip()
+
+    return {
+        "question": question,
+        "answer": _extract_final_answer(raw) if raw else "",
         "raw_response": raw,
         "search_results": results,
     }
