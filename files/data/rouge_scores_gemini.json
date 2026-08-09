@@ -1,13 +1,5 @@
 [
   {
-    "task_id": "04a04a9b-226c-43fd-b319-d5e89743676f",
-    "level": 2,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
     "task_id": "72c06643-a2fa-4186-aa5c-9ec33ae9b445",
     "level": 3,
     "precision": 0.0,
@@ -26,94 +18,6 @@
   {
     "task_id": "e0c10771-d627-4fd7-9694-05348e54ee36",
     "level": 2,
-    "precision": 1.0,
-    "recall": 1.0,
-    "f1": 1.0,
-    "lcs_length": 1
-  },
-  {
-    "task_id": "c714ab3a-da30-4603-bacd-d008800188b9",
-    "level": 1,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "2dfc4c37-fec1-4518-84a7-10095d30ad75",
-    "level": 2,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "b816bfce-3d80-4913-a07d-69b752ce6377",
-    "level": 1,
-    "precision": 1.0,
-    "recall": 1.0,
-    "f1": 1.0,
-    "lcs_length": 1
-  },
-  {
-    "task_id": "ec09fa32-d03f-4bf8-84b0-1f16922c3ae4",
-    "level": 1,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "cabe07ed-9eca-40ea-8ead-410ef5e83f91",
-    "level": 1,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "2a649bb1-795f-4a01-b3be-9a01868dae73",
-    "level": 2,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "20194330-9976-4043-8632-f8485c6c71b2",
-    "level": 2,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "840bfca7-4f7b-481a-8794-c560c340185d",
-    "level": 1,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "08c0b6e9-1b43-4c2e-ae55-4e3fce2c2715",
-    "level": 2,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "d700d50d-c707-4dca-90dc-4528cddd0c80",
-    "level": 2,
-    "precision": 1.0,
-    "recall": 1.0,
-    "f1": 1.0,
-    "lcs_length": 2
-  },
-  {
-    "task_id": "305ac316-eef6-4446-960a-92d80d542f82",
-    "level": 1,
     "precision": 1.0,
     "recall": 1.0,
     "f1": 1.0,
@@ -336,100 +240,12 @@
     "lcs_length": 0
   },
   {
-    "task_id": "ad37a656-079a-49f9-a493-7b739c9167d1",
-    "level": 2,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
     "task_id": "ad2b4d70-9314-4fe6-bfbe-894a45f6055f",
     "level": 3,
     "precision": 0.3333,
     "recall": 0.2,
     "f1": 0.2392,
     "lcs_length": 2
-  },
-  {
-    "task_id": "8e867cd7-cff9-4e6c-867a-ff5ddc2550be",
-    "level": 1,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "a0c07678-e491-4bbc-8f0b-07405144218f",
-    "level": 1,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "48eb8242-1099-4c26-95d4-ef22b002457a",
-    "level": 2,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "ebbc1f13-d24d-40df-9068-adcf735b4240",
-    "level": 3,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "dc22a632-937f-4e6a-b72f-ba0ff3f5ff97",
-    "level": 1,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "872bfbb1-9ccf-49f6-8c5f-aa22818ccd66",
-    "level": 3,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "676e5e31-a554-4acc-9286-b60d90a92d26",
-    "level": 3,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "dd3c7503-f62a-4bd0-9f67-1b63b94194cc",
-    "level": 2,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "5f982798-16b9-4051-ab57-cfc7ebdb2a91",
-    "level": 3,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
-  },
-  {
-    "task_id": "a56f1527-3abf-41d6-91f8-7296d6336c3f",
-    "level": 2,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "lcs_length": 0
   },
   {
     "task_id": "e961a717-6b25-4175-8a68-874d28190ee4",
@@ -489,6 +305,94 @@
   },
   {
     "task_id": "e4e91f1c-1dcd-439e-9fdd-cb976f5293fd",
+    "level": 2,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "lcs_length": 0
+  },
+  {
+    "task_id": "ad37a656-079a-49f9-a493-7b739c9167d1",
+    "level": 2,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "lcs_length": 0
+  },
+  {
+    "task_id": "ebbc1f13-d24d-40df-9068-adcf735b4240",
+    "level": 3,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "lcs_length": 0
+  },
+  {
+    "task_id": "dc22a632-937f-4e6a-b72f-ba0ff3f5ff97",
+    "level": 1,
+    "precision": 1.0,
+    "recall": 0.2353,
+    "f1": 0.3427,
+    "lcs_length": 4
+  },
+  {
+    "task_id": "a0c07678-e491-4bbc-8f0b-07405144218f",
+    "level": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "lcs_length": 0
+  },
+  {
+    "task_id": "676e5e31-a554-4acc-9286-b60d90a92d26",
+    "level": 3,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "lcs_length": 0
+  },
+  {
+    "task_id": "dd3c7503-f62a-4bd0-9f67-1b63b94194cc",
+    "level": 2,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "lcs_length": 0
+  },
+  {
+    "task_id": "8e867cd7-cff9-4e6c-867a-ff5ddc2550be",
+    "level": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "lcs_length": 0
+  },
+  {
+    "task_id": "48eb8242-1099-4c26-95d4-ef22b002457a",
+    "level": 2,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "lcs_length": 0
+  },
+  {
+    "task_id": "872bfbb1-9ccf-49f6-8c5f-aa22818ccd66",
+    "level": 3,
+    "precision": 0.2,
+    "recall": 0.5,
+    "f1": 0.3096,
+    "lcs_length": 1
+  },
+  {
+    "task_id": "5f982798-16b9-4051-ab57-cfc7ebdb2a91",
+    "level": 3,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "lcs_length": 0
+  },
+  {
+    "task_id": "a56f1527-3abf-41d6-91f8-7296d6336c3f",
     "level": 2,
     "precision": 0.0,
     "recall": 0.0,

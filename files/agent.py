@@ -19,7 +19,7 @@ from typing import Dict
 from web_search import web_search, format_search_context
 
 AGENT_MODEL = "llama-3.3-70b-versatile"
-GEMINI_MODEL = "gemini-flash-latest"  # only free-tier model confirmed accessible on this key
+GEMINI_MODEL = "gemini-3.5-flash-lite"  # gemini-3.5-flash-lite is more robust against internal function call errors than 3.6
 
 _groq_client = None
 _gemini_client = None
