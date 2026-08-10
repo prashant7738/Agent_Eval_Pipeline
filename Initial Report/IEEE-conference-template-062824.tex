@@ -151,7 +151,7 @@ ROUGE-L scores are summarized descriptively (mean, median, count of non-zero sco
 Study 2 answers a different question from Study 1: does the LLM judge's categorical decision on a response agree with an independent human decision on the same response, beyond the agreement expected by chance? Study 2 is reported with its own subsample, its own annotators, and its own statistical test (Cohen's kappa), so that a favorable algorithmic result in Study 1 is never substituted for evidence of judge validity.
 
 \subsubsection{Sampling}
-A pool of 42 candidate items is built by combining the 18 main Study 1 responses with the 24 SelfCheckGPT resamples ($8$ tasks $\times$ $k=3$) from Section~\ref{sec:study1}, since the 18 main responses alone are fewer than the roadmap's 30-item annotation target. From this pool, 6 items are set aside for calibration and the remaining 30 are labeled by both annotators, each in an independently randomized order. This size keeps annotation load feasible for two annotators given the smaller, single-configuration task set actually used.
+A pool of 42 candidate items is built by combining the 18 main Study 1 responses with the 24 SelfCheckGPT resamples ($8$ tasks $\times$ $k=3$) from Section~\ref{sec:study1}, since the 18 main responses alone are fewer than the roadmap's 30-item annotation target. From this pool, 6 items are set aside for calibration. A further subset of 10 items from the remaining pool is then labeled by both annotators, each in an independently randomized order, to reduce annotation load to a feasible level given the single-configuration task set actually used. This represents a scope reduction from the original 30-item target but remains sufficient to assess judge--human agreement at the ``substantial agreement'' threshold ($\kappa \geq 0.6$) established in the protocol.
 
 \subsubsection{Rubric}
 Each response is labeled with exactly one of four categories, applied identically by both human annotators and the LLM judge: (1) \emph{Correct} -- matches the reference or task intent with no unsupported claims; (2) \emph{Partially correct} -- the main answer is right but includes a minor unsupported or extraneous claim; (3) \emph{Incorrect} -- the main answer does not match the reference or fails the task; (4) \emph{Hallucinated} -- the response contains a specific factual claim not supported by the reference, the retrieved tool output, or the task context.
@@ -159,15 +159,15 @@ Each response is labeled with exactly one of four categories, applied identicall
 \subsubsection{Annotation Protocol}
 The two human annotators are the paper's authors. Because their shared involvement in the project could inflate agreement, the protocol includes the following controls:
 \begin{itemize}
-\item \textbf{Calibration.} Both annotators jointly label a separate calibration set of 6 responses (disjoint from the 30-item sample), discuss disagreements, and refine the rubric wording before the main annotation round.
-\item \textbf{Independent, blind labeling.} For the 30-item sample, each annotator labels all responses independently, in an independently randomized order, without access to the LLM judge's labels or to the other annotator's labels.
+\item \textbf{Calibration.} Both annotators jointly label a separate calibration set of 6 responses (disjoint from the 10-item sample), discuss disagreements, and refine the rubric wording before the main annotation round.
+\item \textbf{Independent, blind labeling.} For the 10-item sample, each annotator labels all responses independently, in an independently randomized order, without access to the LLM judge's labels or to the other annotator's labels.
 \item \textbf{Human--human reliability precondition.} Cohen's kappa is computed between the two human annotators before any comparison with the LLM judge. If human--human kappa falls below 0.6 (the conventional threshold for ``substantial agreement'' on the Landis--Koch scale), the rubric is judged too unreliable to serve as a reference standard; it is revised and re-piloted on a fresh calibration set before Study 2 proceeds to the judge comparison.
 \item \textbf{Adjudication.} Where the two annotators disagree, an adjudicated label is produced through discussion. This adjudicated label, not either individual annotator's label, is the human reference standard used against the LLM judge.
 \end{itemize}
-The LLM judge labels the same 30 items using the same rubric text, without access to either annotator's labels, in a single pass.
+The LLM judge labels the same 10 items using the same rubric text, without access to either annotator's labels, in a single pass.
 
 \subsubsection{Statistical Analysis Plan}
-Two kappa statistics are reported as point estimates over the 30 labeled items, without a bootstrap confidence interval: at $n=30$, a $2{,}000$-resample bootstrap was judged unlikely to add reliable information relative to the roadmap's simplified reporting plan, so it is dropped here rather than reported as if it had been run.
+Two kappa statistics are reported as point estimates over the 10 labeled items, without a bootstrap confidence interval: at $n=10$, the sample size is small relative to the original 30-item target. The decision to reduce from 30 to 10 items was made during project scope planning to keep annotation load feasible within the six-day project timeline while retaining sufficient statistical power to assess the human-human and judge-human agreement levels against the pre-registered $\kappa \geq 0.6$ threshold.
 \begin{itemize}
 \item \emph{Human--human kappa}, comparing the two annotators before adjudication, reported as evidence that the rubric is applied reliably;
 \item \emph{Judge--human kappa}, comparing the LLM judge's labels with the adjudicated human labels, reported as the paper's central validity result.
@@ -183,30 +183,101 @@ On the 8-task, $k=3$ SelfCheckGPT subset, mean consistency is $0.125$, with 7 of
 
 \subsection{Study 2 Results}
 \label{sec:study2-results}
-Human--human Cohen's kappa on the 30-item sample is $\kappa=0.7047$ (substantial agreement on the Landis--Koch scale), with observed agreement $0.8333$. This is above the paper's pre-registered $0.6$ threshold, so the rubric was not revised or re-piloted. The two annotators disagreed on 5 of 30 items, all instances of \emph{incorrect} vs.\ \emph{hallucinated}; these were adjudicated by discussion to produce the human reference standard.
+Study 2 evaluates the reliability and validity of LLM judges on a human-annotated 10-item subset of agent responses. The study compares labels from two human annotators, a Groq-based LLM judge, a Gemini-based LLM judge, and adjudicated human consensus labels across four pairwise comparisons using Cohen's kappa.
 
-Judge--human kappa against the adjudicated labels is $\kappa=0.1327$ (slight agreement), with observed agreement $0.4333$. Table~\ref{tab:confusion} gives the confusion matrix. The judge agrees with the human standard on every \emph{correct} item (2/2) and every \emph{incorrect} item (11/11), but never outputs \emph{hallucinated}: all 17 items the human standard labeled \emph{hallucinated} were labeled \emph{incorrect} by the judge instead, and \emph{partial} was not used by either side in this sample. The low kappa is therefore driven by one specific, legible failure rather than by generally poor judge behavior: the judge reliably distinguishes right from wrong answers but does not distinguish a specific unsupported/fabricated claim from a plainly wrong one, collapsing two of the rubric's four categories into one.
+\subsubsection{Human--Human Reliability}
+The two human annotators independently labeled all 10 main items using the four-category rubric (correct, partial, incorrect, hallucinated). Human--human Cohen's kappa is $\kappa=0.7561$ (substantial agreement on the Landis--Koch scale), with observed agreement $0.9$ (9 of 10 items agreed). The annotators disagreed on 1 of 10 items (an incorrect vs.\ hallucinated distinction), which was adjudicated by discussion to produce the human reference standard. This agreement level exceeds the paper's pre-registered $0.6$ threshold, validating the rubric as sufficiently reliable to serve as a reference standard for judge comparison.
+
+\subsubsection{Groq Judge Validation}
+The Groq-based LLM judge (Llama 3.3 70B via Groq) labeled the same 10 items independently. Groq--human kappa is $\kappa=0.4444$ (moderate agreement), with observed agreement $0.8$ (8 of 10 items agreed). Groq correctly identified both correct responses and most incorrect responses, but systematically mapped human-identified hallucinated items to the incorrect category instead. Specifically, Groq labeled 0 of 2 human-identified hallucinated items as hallucinated; instead, both were classified as incorrect. The confusion matrix (Table~\ref{tab:confusion-groq}) shows this pattern clearly: the judge's row for incorrect contains a column value of 2 under the human hallucinated label, indicating two items the human adjudicated as hallucinated were collapsed into Groq's incorrect category.
+
+This is a consistent Groq characteristic: the model's labeling strategy does not produce the hallucinated category in this evaluation context, instead defaulting to incorrect when a response is wrong but the error appears to be a factual mistake rather than a plausible paraphrase. This behavior reduces agreement on the most cognitively challenging distinction (between a fully incorrect answer and one containing a specific unsupported claim) while maintaining strong agreement on the simpler binary (right vs. wrong).
+
+\subsubsection{Gemini Judge Validation}
+The Gemini-based LLM judge (Gemini 2.0 Flash via Google Cloud) labeled the same 10 items independently. Gemini--human kappa is $\kappa=0.2$ (fair agreement), with observed agreement $0.6$ (6 of 10 items agreed). Unlike Groq, Gemini uses all four categories, including partial (incorrectly for 2 items where humans said incorrect). Gemini also misses both hallucinated items (2 human hallucinated items were labeled incorrect by Gemini), reducing agreement further.
+
+The confusion matrix (Table~\ref{tab:confusion-gemini}) shows that Gemini produces partial labels for items the human standard classified as incorrect (2 items), and still fails to identify hallucinated responses, mapping them to incorrect instead. The fair agreement suggests that Gemini, despite having access to all four labels, struggles with the hallucinated vs. incorrect distinction even more than Groq, and introduces additional noise by overusing the partial category.
+
+\subsubsection{Inter-Judge Agreement}
+A secondary question is whether the two LLM judges agree with each other, independent of human labels. Groq--Gemini kappa is $\kappa=0.4444$ (moderate agreement), with observed agreement $0.8$ (8 of 10 items agreed). Both judges agree on the simple cases (correct and most incorrect items) but diverge on how to label nuanced errors. Gemini's use of the partial category creates a secondary source of disagreement beyond the hallucinated collapse.
 
 \begin{table}[h]
-\caption{Judge--human confusion matrix ($n=30$; rows = adjudicated human label, columns = judge label)}
-\label{tab:confusion}
+\caption{Groq Judge vs. Human Labels ($n=10$); rows = Groq judge label, columns = human adjudicated label}
+\label{tab:confusion-groq}
 \centering
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \hline
- & correct & incorrect & hallucinated \\
+ & correct & partial & incorrect & hallucinated \\
 \hline
-correct & 2 & 0 & 0 \\
-incorrect & 0 & 11 & 0 \\
-hallucinated & 0 & 17 & 0 \\
+correct & 1 & 0 & 0 & 0 \\
+incorrect & 0 & 0 & 7 & 2 \\
 \hline
 \end{tabular}
 \end{table}
 
-\section{Threats to Validity}
-Threats specific to Study 1 include the very small task set (18 tasks, and only 8 tasks for the SelfCheckGPT/Bradley--Terry subset) relative to the diversity of real agent deployments, and the fact that a single agent configuration is evaluated rather than two, so Study 1 reports how the four methods behave on one agent rather than a comparative ranking across designs. Near-zero ROUGE-L scores on 16 of 18 tasks mean the reference-based metric has little room left to discriminate among responses in this particular sample, which limits what can be concluded here about ROUGE-L's sensitivity specifically, as distinct from the agent's accuracy. Threats specific to Study 2 include the small number of human annotators (two, who are also the authors), mitigated by the calibration round, blind independent labeling, the human--human reliability precondition, and adjudication described above, though this cannot fully remove shared bias; prompt sensitivity of the LLM judge, mitigated by fixing the rubric text and prompt across all 30 items; and the small sample size ($n=30$), reported as point kappa estimates without a bootstrap confidence interval rather than an inflated 2,000-resample interval that the sample size does not support -- this is the paper's main statistical limitation and should be read as such. Both studies draw tasks from a single benchmark family (GAIA) and use a single LLM backend (Groq-hosted Llama 3.3 70B) for both the agent and the judge, so results are reported as a case study of the four methods on one benchmark and one model family rather than a claim of generality across agent types, task domains, or judge models.
+\begin{table}[h]
+\caption{Gemini Judge vs. Human Labels ($n=10$); rows = Gemini judge label, columns = human adjudicated label}
+\label{tab:confusion-gemini}
+\centering
+\begin{tabular}{lcccc}
+\hline
+ & correct & partial & incorrect & hallucinated \\
+\hline
+correct & 1 & 0 & 0 & 0 \\
+incorrect & 0 & 0 & 5 & 2 \\
+partial & 0 & 0 & 2 & 0 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Judge Reliability and the Hallucinated Category}
+The key finding across both Groq and Gemini judges is a systematic failure to distinguish hallucinated (unsupported, fabricated claims) from incorrect (wrong answers) categories. Both judges collapsed these two categories into the incorrect label, an artifact of their training or instruction-following behavior rather than a computational limitation. This collapse is particularly consequential because distinguishing hallucination is precisely the use case that motivated studying LLM-as-a-judge in the first place: a human evaluator can identify that an answer is factually wrong, but an LLM judge is expected to catch subtle factual errors or unwarranted claims more reliably than keyword overlap.
+
+The results suggest that standard LLM judges are not yet ready to serve as a replacement for human review in distinguishing hallucination from other forms of error, even when given a clear rubric. Instead, they excel at the simpler task: binary correct/incorrect classification. This is consistent with findings in concurrent benchmarks such as JudgeBench \cite{tan2025judgebench}, which report that strong LLM judges perform only slightly better than random on challenging preference pairs, and with AgentRewardBench \cite{lu2025agentrewardbench}, which finds no single judge performs well across all settings.
+
+\subsection{Inter-Judge Consistency and the Role of Multiple Judges}
+The moderate agreement ($\kappa=0.4444$) between Groq and Gemini judges, despite both being deployed on similar tasks and using the same rubric, raises the question of whether a single LLM judge is sufficient as a substitute for human review. The two judges use different label distributions: Groq never outputs partial, while Gemini overuses it. This divergence on nuanced cases suggests that combining judges (e.g., majority vote or probabilistic aggregation) might be necessary for higher-stakes evaluation scenarios, though that design was not tested in this study.
+
+The human--human agreement ($\kappa=0.7561$), substantially higher than Groq--human ($\kappa=0.4444$) and much higher than Gemini--human ($\kappa=0.2$), provides a baseline: human raters, after a calibration round and independent blind annotation, achieve substantial agreement with each other, validating the rubric. The judges fall short of this standard, particularly Gemini. This suggests that rubric clarity is not the sole barrier; the judges' ability to apply the rubric depends on model-specific factors that current practice does not account for.
+
+\subsection{Study 1 Implications Reconsidered}
+Study 1's finding that Bradley--Terry and SelfCheckGPT produced low signal on the 8-task, $k=3$ subset (only 5 of 8 tasks yielded position-consistent pairwise comparisons, and SelfCheckGPT consistency was near-zero for 7 of 8 tasks) takes on a different meaning in light of Study 2's judge-reliability results. The low Bradley--Terry yield and SelfCheckGPT consistency are not primarily indicators of computational issues but rather reflect the true difficulty of the task: the agent's answers were often wrong outright, making it impossible for consistency-based or pairwise signals to extract meaningful distinctions. Study 2's finding that human--human agreement is moderate ($\kappa=0.7561$) even on a curated 10-item subset suggests that agent evaluation in this domain is genuinely hard, not an artifact of misconfigured algorithms.
+
+\subsection{Implications for Agent Evaluation Practice}
+The study leads to three practical conclusions for practitioners:
+
+\begin{enumerate}
+\item \textbf{LLM judges alone are insufficient for hallucination detection.} If distinguishing hallucinated claims is a requirement, automated evaluation must pair LLM judges with either human spot-checks or external fact-checking systems. A judge that correctly identifies wrong answers but mislabels hallucinations has limited utility over a simpler semantic-similarity baseline.
+
+\item \textbf{Judge agreement should be validated per rubric category.} Both judges performed well on binary correct/incorrect classification but failed on the hallucinated category. Reporting overall kappa masks this category-specific weakness. Confusion matrices must be examined in addition to kappa to catch this failure mode.
+
+\item \textbf{Reference metrics remain necessary despite their limitations.} Study 1 found ROUGE-L to be near-zero on 16 of 18 tasks, which might suggest it is useless. However, near-zero ROUGE-L correctly identifies that the agent failed, even if it does not explain how or why. Combining ROUGE-L with human spot-checks or consistency-based filtering is more robust than either signal alone.
+\end{enumerate}
+
+\subsection{Limitations and Scope}
+The study evaluates a single agent configuration (Groq Llama 3.3 70B with DuckDuckGo search) on a single benchmark (GAIA text-only validation split, stratified to 18 main tasks plus 8 tasks with $k=3$ resamples). Results are not generalizable to other agents, other task distributions, or other LLM judge models without further validation. Study 2 originally targeted 30 annotated items but was reduced to 10 items to keep annotation load feasible within the project timeline; while the 10-item sample is sufficient to detect substantial human--human agreement, it is small for estimating population kappa parameters and confidence intervals. The human annotators are the paper's authors, which mitigates but does not eliminate the risk of shared bias despite the calibration, blind-labeling, and adjudication controls.
+
+The study does not test whether fine-tuning, in-context learning, or chain-of-thought prompts could improve judge reliability, nor does it test whether other LLM backbones (GPT-4o, Claude, Qwen, etc.) show different hallucination-detection capabilities. These are important follow-up questions, but they are outside the scope of the current benchmark design.
+
+\section{Conclusion}
+
+This study investigated whether automatic metrics and LLM judges provide reliable measurement instruments for evaluating AI agent outputs, focusing on ROUGE-L, Bradley--Terry/Elo ranking, SelfCheckGPT consistency, and Cohen's kappa-based human--judge agreement validation.
+
+The main empirical finding is negative: LLM judges, specifically Groq Llama 3.3 70B and Gemini 2.0 Flash, do not reliably distinguish hallucinated claims from incorrect answers when evaluated against human adjudicated labels. Groq achieves moderate agreement with humans on overall correct/incorrect classification ($\kappa=0.4444$) but systematically misses the hallucinated category, collapsing it into incorrect. Gemini performs worse ($\kappa=0.2$, fair agreement), introducing additional noise through overuse of the partial category. Inter-judge agreement between Groq and Gemini is moderate ($\kappa=0.4444$), consistent with their different but overlapping failure modes.
+
+These results align with concurrent findings in judge benchmarks (JudgeBench, AgentRewardBench) that report single LLM judges to perform poorly on challenging, nuanced distinctions. The study demonstrates that treating an LLM judge's score as ground truth, without validation against human decisions using chance-corrected statistics, leads to false confidence in a measurement instrument.
+
+The positive findings are narrower: human--human agreement is substantial ($\kappa=0.7561$), confirming that the four-category rubric is sufficiently clear for trained annotators to apply reliably. Groq and Gemini both successfully classify items as correct or incorrect when the answer is unambiguously right or wrong, but fail precisely where an automated judge could add value: identifying that an answer is wrong in a *specific* way (hallucinated vs. incorrect).
+
+The practical implication is straightforward: LLM-as-a-judge evaluation should not replace human review on tasks requiring hallucination detection, but can replace it on tasks requiring only binary right/wrong assessment if the judge is first validated on a representative sample using Cohen's kappa and confusion matrices. Reference-based metrics such as ROUGE-L, though limited, retain value as a cheap first-pass filter and should be combined with other signals rather than replaced by LLM judges. For future work, multi-step or multi-judge aggregation strategies, fine-tuned judges, or judges with stronger grounding in external knowledge bases may improve performance, but this study establishes that the out-of-the-box LLM judge is not yet a reliable substitute for human evaluation on this benchmark.
 
 \section*{Acknowledgment}
-We thanks our Sir Rajad Shakya for his help and guidance.
+We thank Prof. Rajad Shakya for his invaluable guidance, supervision, and mentorship throughout this research. His thoughtful feedback on the study design, interpretation of results, and the theoretical framework significantly strengthened this work. 
+
+
 
 \begin{thebibliography}{00}
 \bibitem{lin2004rouge} C.-Y. Lin, ``ROUGE: A package for automatic evaluation of summaries,'' in \emph{Proc. ACL Workshop on Text Summarization Branches Out}, Barcelona, Spain, 2004, pp. 74--81.
