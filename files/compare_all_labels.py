@@ -1,7 +1,7 @@
 ﻿import json
 import csv
 from pathlib import Path
-from kappa import cohens_kappa, interpret_kappa
+from kappa import cohens_kappa, interpret_kappa, per_class_prf, pabak, collapse_binary
 
 DATA_DIR = Path('data')
 
@@ -105,5 +105,46 @@ if gemini_aligned:
     print_cm(result['confusion_matrix'], result['labels'])
 else:
     print('   No overlapping items')
+
+print('\n' + '=' * 80)
+print('PRIMARY ANALYSIS: FULL n=30 POOL (main + selfcheck resamples), GROQ + HUMAN ONLY')
+print('(Gemini judge only covers the 10 main_ items above, so it is reported separately)')
+print('=' * 80)
+
+final_human = load_json(DATA_DIR / 'final_human_labels.json')
+all_ids = sorted(set(a1_dict) & set(a2_dict) & set(judge_groq) & set(final_human))
+print(f'\nItems in full pool with all four labels present: {len(all_ids)}\n')
+
+a1_full = [a1_dict[i] for i in all_ids]
+a2_full = [a2_dict[i] for i in all_ids]
+groq_full = [judge_groq[i] for i in all_ids]
+human_full = [final_human[i] for i in all_ids]
+
+print('5. ANNOTATOR1 vs ANNOTATOR2 (n=30)')
+result_hh30 = cohens_kappa(a1_full, a2_full)
+print(f"   κ = {result_hh30['kappa']} ({interpret_kappa(result_hh30['kappa'])})")
+print(f"   n = {result_hh30['n']}, Observed agreement = {result_hh30['observed_agreement']}")
+print('   Confusion Matrix (rows=Annotator1, cols=Annotator2):')
+print_cm(result_hh30['confusion_matrix'], result_hh30['labels'])
+
+print('\n6. GROQ JUDGE vs FINAL HUMAN (n=30, primary)')
+result_gh30 = cohens_kappa(groq_full, human_full)
+print(f"   κ = {result_gh30['kappa']} ({interpret_kappa(result_gh30['kappa'])})")
+print(f"   n = {result_gh30['n']}, Observed agreement = {result_gh30['observed_agreement']}")
+print('   Confusion Matrix (rows=Groq, cols=Final Human):')
+print_cm(result_gh30['confusion_matrix'], result_gh30['labels'])
+
+print('\n   Per-class precision/recall/F1 (Groq predicted vs. human gold):')
+prf = per_class_prf(result_gh30['confusion_matrix'], result_gh30['labels'])
+for label, m in prf.items():
+    print(f"     {label:<14} precision={m['precision']:.4f}  recall={m['recall']:.4f}  f1={m['f1']:.4f}")
+
+print('\n   Binary collapse (correct+partial=right vs incorrect+hallucinated=wrong):')
+groq_bin = collapse_binary(groq_full)
+human_bin = collapse_binary(human_full)
+result_bin = cohens_kappa(groq_bin, human_bin)
+print(f"     binary κ = {result_bin['kappa']} ({interpret_kappa(result_bin['kappa'])}), "
+      f"observed agreement = {result_bin['observed_agreement']}")
+print(f"     PABAK = {pabak(result_bin['observed_agreement'])}")
 
 print('\n' + '=' * 80)

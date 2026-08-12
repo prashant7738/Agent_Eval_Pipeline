@@ -51,6 +51,40 @@ def cohens_kappa(rater_a: List[str], rater_b: List[str]) -> Dict:
     }
 
 
+def per_class_prf(confusion: Dict[str, Dict[str, int]], labels: List[str], pred_is_rows: bool = True) -> Dict[str, Dict[str, float]]:
+    """
+    Per-class precision/recall/F1 from a cohens_kappa() confusion matrix.
+    confusion[a][b]: a = rows, b = columns. pred_is_rows=True treats rows (rater_a) as the
+    predicted label and columns (rater_b) as gold -- matches how this repo calls
+    cohens_kappa(judge_labels, human_labels).
+    """
+    metrics = {}
+    for label in labels:
+        if pred_is_rows:
+            tp = confusion[label][label]
+            fp = sum(confusion[label][b] for b in labels) - tp
+            fn = sum(confusion[a][label] for a in labels) - tp
+        else:
+            tp = confusion[label][label]
+            fn = sum(confusion[label][b] for b in labels) - tp
+            fp = sum(confusion[a][label] for a in labels) - tp
+        precision = tp / (tp + fp) if (tp + fp) else 0.0
+        recall = tp / (tp + fn) if (tp + fn) else 0.0
+        f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
+        metrics[label] = {"precision": round(precision, 4), "recall": round(recall, 4), "f1": round(f1, 4)}
+    return metrics
+
+
+def pabak(p_o: float) -> float:
+    """Prevalence-and-bias-adjusted kappa: 2*p_o - 1. Intended for a 2-category collapse."""
+    return round(2 * p_o - 1, 4)
+
+
+def collapse_binary(labels: List[str], positive: Tuple[str, ...] = ("correct", "partial")) -> List[str]:
+    """Collapse a 4-category rubric to a binary right/wrong label for binary-vs-categorical agreement."""
+    return ["right" if label in positive else "wrong" for label in labels]
+
+
 def interpret_kappa(kappa: float) -> str:
     """Landis & Koch (1977) conventional interpretation scale -- cite this if you use it."""
     if kappa < 0:

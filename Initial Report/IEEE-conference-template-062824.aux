@@ -43,6 +43,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Study 1: Algorithmic Comparison of Output-Evaluation Methods}{4}{}\protected@file@percent }
 \newlabel{sec:study1}{{\mbox  {IV-C}}{4}{}{}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}1}Design}{4}{}\protected@file@percent }
+\citation{manakul2023selfcheckgpt}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}2}Procedure}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}3}Statistical Analysis Plan}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Study 2: Human--LLM Judge Agreement Study}{5}{}\protected@file@percent }
@@ -51,15 +52,32 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}2}Sampling}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}3}Rubric}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}4}Annotation Protocol}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}5}Statistical Analysis Plan}{5}{}\protected@file@percent }
+\citation{manakul2023selfcheckgpt}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}5}Statistical Analysis Plan}{6}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {V}Results}{6}{}\protected@file@percent }
 \newlabel{sec:results}{{V}{6}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Study 1 Results}{6}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Study 2 Results}{6}{}\protected@file@percent }
 \newlabel{sec:study2-results}{{\mbox  {V-B}}{6}{}{}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Judge--human confusion matrix ($n=30$; rows = adjudicated human label, columns = judge label)}}{6}{}\protected@file@percent }
-\newlabel{tab:confusion}{{I}{6}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Threats to Validity}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}1}Primary Result: Human--Human and Groq--Human Agreement (n=30)}{6}{}\protected@file@percent }
+\citation{tan2025judgebench}
+\citation{lu2025agentrewardbench}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Groq Judge vs. Human Labels, primary sample ($n=30$); rows = Groq judge label, columns = human adjudicated label}}{7}{}\protected@file@percent }
+\newlabel{tab:confusion-groq30}{{I}{7}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Per-class precision/recall/F1, Groq judge vs.\ human gold ($n=30$)}}{7}{}\protected@file@percent }
+\newlabel{tab:prf-groq30}{{II}{7}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}2}Secondary Comparison: 10-Item Subsample with a Second Judge (Gemini)}{7}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Gemini Judge vs. Human Labels, secondary subsample ($n=10$); rows = Gemini judge label, columns = human adjudicated label}}{7}{}\protected@file@percent }
+\newlabel{tab:confusion-gemini}{{III}{7}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{7}{}\protected@file@percent }
+\newlabel{sec:discussion}{{VI}{7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Judge Reliability and the Hallucinated Category}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Inter-Judge Consistency and the Role of Multiple Judges}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Study 1 Implications Reconsidered}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}Implications for Agent Evaluation Practice}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-E}}Limitations and Scope}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-F}}Data and Code Availability}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{8}{}\protected@file@percent }
 \bibcite{lin2004rouge}{1}
 \bibcite{bradley1952rank}{2}
 \bibcite{elo1978rating}{3}
@@ -73,5 +91,5 @@
 \bibcite{zhuge2024agentasjudge}{11}
 \bibcite{lu2025agentrewardbench}{12}
 \bibcite{mialon2023gaia}{13}
-\@writefile{toc}{\contentsline {section}{References}{7}{}\protected@file@percent }
-\gdef \@abspage@last{7}
+\@writefile{toc}{\contentsline {section}{References}{9}{}\protected@file@percent }
+\gdef \@abspage@last{9}
