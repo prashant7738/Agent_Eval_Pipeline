@@ -117,7 +117,7 @@ The four methods belong together theoretically, but they do not belong in a sing
 
 \section{Research Design}
 \subsection{Overview}
-The study is organized as two separate studies that share a single source of agent tasks (Section~\ref{sec:data}) but differ in design, sampling, and analysis. Study 1 (Section~\ref{sec:study1}) is a purely algorithmic comparison of ROUGE-L, Bradley--Terry/Elo ranking, and SelfCheckGPT; it requires no human subjects and answers questions about computational cost and statistical behavior. Study 2 (Section~\ref{sec:study2}) is a human--LLM judge agreement study; it requires an independent human-annotation protocol and answers whether the LLM judge agrees with human decisions beyond chance. Results, procedures, and statistical tests for the two studies are reported in separate subsections so that they are never conflated.
+The study is organized as two separate studies that share a single source of agent tasks (Section~\ref{sec:data}) but differ in design, sampling, and analysis. Study 1 (Section~\ref{sec:study1}) is a purely algorithmic comparison of ROUGE-L, Bradley--Terry/Elo ranking, and SelfCheckGPT; it requires no human subjects and answers questions about computational cost and statistical behavior. Study 2 (Section~\ref{sec:study2}) is an LLM judge--human agreement study; it requires an independent human-annotation protocol and answers whether the LLM judge agrees with human decisions beyond chance. Results, procedures, and statistical tests for the two studies are reported in separate subsections so that they are never conflated.
 
 \subsection{Shared Task Source and Inclusion Criteria}
 \label{sec:data}
@@ -146,7 +146,7 @@ Study 1 answers a purely algorithmic question: how do ROUGE-L, Bradley--Terry/El
 \subsubsection{Statistical Analysis Plan}
 ROUGE-L scores are summarized descriptively (mean, median, count of non-zero scores) over the 18 tasks. Because only one agent configuration is evaluated, no paired cross-configuration test applies; the originally planned 500-resample bootstrap Kendall's $\tau$ over cross-configuration rankings is dropped for the same reason and reported here as a scope reduction rather than a result that was not run. Per-task Bradley--Terry fits are instead reported as a yield statistic: the fraction of the 8-task subset for which at least one position-bias-consistent comparison was obtained. SelfCheckGPT consistency scores are summarized descriptively and, for the same 8-task subset, compared qualitatively against the corresponding human hallucination labels from Study 2 as a small, non-circular sanity check; at $n=8$ the subset is too small to support a formal correlation test.
 
-\subsection{Study 2: Human--LLM Judge Agreement Study}
+\subsection{Study 2: LLM Judge--Human Agreement Study}
 \label{sec:study2}
 \subsubsection{Design}
 Study 2 answers a different question from Study 1: does the LLM judge's categorical decision on a response agree with an independent human decision on the same response, beyond the agreement expected by chance? Study 2 is reported with its own subsample, its own annotators, and its own statistical test (Cohen's kappa), so that a favorable algorithmic result in Study 1 is never substituted for evidence of judge validity.
@@ -305,7 +305,7 @@ We thank Prof. Rajad Shakya for his guidance and supervision throughout this res
 \bibitem{bradley1952rank} R. A. Bradley and M. E. Terry, ``Rank analysis of incomplete block designs: I. The method of paired comparisons,'' \emph{Biometrika}, vol. 39, nos. 3--4, pp. 324--345, 1952.
 \bibitem{elo1978rating} A. E. Elo, \emph{The Rating of Chessplayers, Past and Present}. New York, NY, USA: Arco, 1978.
 \bibitem{zheng2023judging} L. Zheng \emph{et al.}, ``Judging LLM-as-a-judge with MT-Bench and Chatbot Arena,'' arXiv:2306.05685, 2023.
-\bibitem{manakul2023selfcheckgpt} P. Manakul, A. Liusie, and M. J. F. Gales, ``SelfCheckGPT: Zero-resource black-box hallucination detection for generative large language models,'' in \emph{Proc. EMNLP}, 2023, pp. 9004--9022.
+\bibitem{manakul2023selfcheckgpt} P. Manakul, A. Liusie, and M. J. F. Gales, ``SelfCheckGPT: Zero-resource black-box hallucination detection for generative large language models,'' in \emph{Proc. EMNLP}, 2023, pp. 9004--9017.
 \bibitem{li2024generation} D. Li, B. Jiang, L. Huang, A. Beigi, C. Zhao, Z. Tan, A. Bhattacharjee, Y. Jiang, C. Chen, T. Wu, K. Shu, L. Cheng, and H. Liu, ``From generation to judgment: Opportunities and challenges of LLM-as-a-judge,'' arXiv:2411.16594, 2024.
 \bibitem{li2024evaluation} H. Li \emph{et al.}, ``LLMs-as-judges: A comprehensive survey on LLM-based evaluation methods,'' arXiv:2412.05579, 2024.
 \bibitem{gu2025survey} J. Gu \emph{et al.}, ``A survey on LLM-as-a-judge,'' arXiv:2411.15594, 2025.
